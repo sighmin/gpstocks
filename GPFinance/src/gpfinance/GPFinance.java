@@ -7,6 +7,8 @@ package gpfinance;
  */
 public class GPFinance {
     public static void main(String[] args) {
+        // parse args
         
+        // dispatch simulation
     }
 }
