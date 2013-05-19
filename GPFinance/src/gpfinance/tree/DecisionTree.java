@@ -7,5 +7,28 @@ package gpfinance.tree;
  */
 public class DecisionTree {
     
+    private Node root;
     
+    public DecisionTree(){
+        
+    }
+    
+    public String printInorder(Node node){
+        String tmp = "";
+        if (node != null){
+            tmp += printInorder(node.left);
+            tmp += node.toString() + ", ";
+            tmp += printInorder(node.right);
+        }
+        return tmp;
+    }
+    
+    @Override
+    public String toString(){
+        String tmp = "";
+        if (root != null){
+            return printInorder(root);
+        }
+        return tmp;
+    }
 }
