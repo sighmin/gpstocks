@@ -14,13 +14,13 @@ public class GP {
     private ArrayList<Individual> population = new ArrayList<Individual>();
     //                              {grow,  trunc, indicator, leaf, inequality, gauss}
     private double[] mutationRate = {100.0, 0.0,   0.4,       0.4,  0.4,        0.4};
-    private double crossoverProb = 0.6;
+    private double crossoverProb = 0.8;
     
     /* Strategies */
     private InitializationStrategy initializationStrategy;
-    private SelectionStrategy selectionStrategy;
-    private CrossoverStrategy crossoverStrategy;
-    private MutationStrategy mutationStrategy;
+    private SelectionStrategy selectionStrategy = new MuLambdaSelectionStrategy();
+    private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(crossoverProb, new RankBasedSelectionStrategy());
+    private MutationStrategy mutationStrategy = new TreeMutationStrategy(mutationRate);
 
     // generate constructors once all instance variables defined
     public GP(){ }
@@ -34,18 +34,26 @@ public class GP {
         do {
             // Measure individuals
             for (Individual individual : population){
-                individual.measure();
+                individual.measure(t);
+            }
+            
+            // Clone previous generation, P
+            ArrayList<Individual> previousPopulation = new ArrayList<Individual>(population.size());
+            for (int i = 0; i < previousPopulation.size(); ++i){
+                previousPopulation.set(i, population.get(i).clone());
             }
             
             // Reproduction producing P'
-            ArrayList<Individual> offspring = crossoverStrategy.crossover(population, (t / generations) * 100.0, selectionStrategy);
+            double progress = (t / generations) * 100.0;
+            ArrayList<Individual> crossoverOffspring = crossoverStrategy.crossover(population, progress);
             
-            // Mutate P (allows broader mutation of )
-            mutationStrategy.mutate(population, (t / generations) * 100.0, selectionStrategy);
+            // Mutate producing P''
+            ArrayList<Individual> mutationOffspring = mutationStrategy.mutate(population, progress);
             
-            // Select P(t+1) from P U P'
-            offspring.addAll(population);
-            population = selectionStrategy.select(offspring, population.size());
+            // Select P(t+1) from P U P' U P''
+            previousPopulation.addAll(crossoverOffspring);
+            previousPopulation.addAll(mutationOffspring);
+            population = selectionStrategy.select(previousPopulation, population.size());
             
             // Advance to next generation
             ++t;

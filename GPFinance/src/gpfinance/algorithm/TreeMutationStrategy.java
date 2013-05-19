@@ -9,8 +9,14 @@ import java.util.ArrayList;
  */
 public class TreeMutationStrategy implements MutationStrategy {
     
+    double[] rates;
+    
+    public TreeMutationStrategy(double[] rates){
+        this.rates = rates;
+    }
+    
     @Override
-    public void mutate(ArrayList<Individual> population, double progress, SelectionStrategy selectionStrategy){
-        
+    public ArrayList<Individual> mutate(ArrayList<Individual> population, double progress){
+        return null;
     }
 }

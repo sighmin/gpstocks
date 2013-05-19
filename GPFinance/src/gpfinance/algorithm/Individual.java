@@ -10,7 +10,12 @@ import gpfinance.tree.DecisionTree;
 public class Individual {
     private DecisionTree tree;
     
-    public void measure(){
+    @Override
+    public Individual clone(){
+        return null;
+    }
+    
+    public void measure(int t){
         
     }
 }

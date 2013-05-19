@@ -8,5 +8,5 @@ import java.util.ArrayList;
  * @author Simon van Dyk, Stuart Reid
  */
 public interface CrossoverStrategy {
-    public ArrayList<Individual> crossover(ArrayList<Individual> population, double progress, SelectionStrategy selectionStrategy);
+    public ArrayList<Individual> crossover(ArrayList<Individual> population, double progress);
 }
