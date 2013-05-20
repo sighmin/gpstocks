@@ -1,6 +1,8 @@
 
 package gpfinance.tree;
 
+import gpfinance.datatypes.Decision;
+
 /**
  * @date   2013-06-01
  * @author Simon van Dyk, Stuart Reid

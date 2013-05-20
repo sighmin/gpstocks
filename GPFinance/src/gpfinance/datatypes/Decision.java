@@ -1,5 +1,5 @@
 
-package gpfinance.tree;
+package gpfinance.datatypes;
 
 /**
  * @date   2013-06-01
@@ -15,13 +15,5 @@ public enum Decision {
     private Decision(int code, String label){
         this.code = code;
         this.label = label;
-    }
-
-    public int getCode() {
-        return code;
-    }
-    
-    public String getLabel() {
-        return label;
     }
 }

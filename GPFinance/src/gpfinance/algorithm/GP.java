@@ -11,19 +11,19 @@ public class GP {
     /* Control Parameters */
     private int generations = 5000;
     private int populationSize = 50;
-    private ArrayList<Individual> population = new ArrayList<Individual>();
+    private ArrayList<Individual> population = new ArrayList(populationSize);
     //                              {grow,  trunc, indicator, leaf, inequality, gauss}
     private double[] mutationRate = {100.0, 0.0,   0.4,       0.4,  0.4,        0.4};
     private double crossoverProb = 0.8;
     
     /* Strategies */
-    private InitializationStrategy initializationStrategy;
+    private InitializationStrategy initializationStrategy = new InitializationStrategy();
     private SelectionStrategy selectionStrategy = new MuLambdaSelectionStrategy();
     private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(crossoverProb, new RankBasedSelectionStrategy());
     private MutationStrategy mutationStrategy = new TreeMutationStrategy(mutationRate);
 
     // generate constructors once all instance variables defined
-    public GP(){ }
+    public GP(){ /* Create GP with default parameters */ }
     
     public void run(){
         // Initialize population

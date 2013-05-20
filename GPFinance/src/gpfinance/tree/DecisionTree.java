@@ -7,7 +7,7 @@ package gpfinance.tree;
  */
 public class DecisionTree {
     
-    private Node root;
+    private CriteriaNode root;
     
     public DecisionTree(){
         
