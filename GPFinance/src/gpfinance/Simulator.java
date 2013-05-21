@@ -1,5 +1,6 @@
 package gpfinance;
 
+import gpfinance.algorithm.GP;
 import gpfinance.datatypes.*;
 import gpfinance.tree.*;
 
@@ -7,22 +8,29 @@ import gpfinance.tree.*;
  * @date 2013-06-01
  * @author Simon van Dyk, Stuart Reid
  */
-public class Simulator {
+public class Simulator extends Thread {
+    
+    private String[] args = null;
 
-    public Simulator() {
-    }
+    public Simulator(String[] args) { this.args = args; }
 
-    public void run(String[] args) {
+    @Override
+    public void run() {
+        // Parse
+        // TODO parse this.args and create appropriate GP() and run it
         
+        // Dispatch
+        GP algorithm = new GP();
+        algorithm.run();
     }
     
-    public void test(String[] args) {
+    public void test() {
         Test test = new Test(args);
     }
 
     private class Test {
         public Test(String[] args) {
-            // Parse
+            // Parse args
             String c = "";
             for (String s : args) {
                 c += s + " ";
@@ -46,45 +54,53 @@ public class Simulator {
         }
 
         private void testDataTypes() {
-            U.pl("*** Testing data types");
+            U.m("\n*** Testing data types");
             Decision[] decisions = {Decision.BUY, Decision.SELL};
             for (Decision d : decisions) {
-                U.pl(d);
+                U.m(d);
             }
 
             Indicator[] techInd = {Tech.EXAMPLE};
             Indicator[] fundInd = {Fund.RAD};
             for (int i = 0; i < 5; ++i) {
-                U.pl(Fund.getRandom());
+                U.m(Fund.getRandom());
             }
 
             for (Indicator d : techInd) {
-                U.pl(d);
+                U.m(d);
             }
             for (Indicator d : fundInd) {
-                U.pl(d);
+                U.m(d);
             }
         }
 
         private void testTree() {
             // init tree
-            U.pl("*** Testing trees");
+            U.m("\n*** Testing trees");
             DecisionTree tree = new DecisionTree('F', 5);
             // size
-            U.pl("Size: " + tree.size());
+            U.m("Size: " + tree.size());
+            U.m("Avg depth: " + tree.avgDepth());
             // print
-            U.pl("Print tree");
-            tree.printTree();
+            U.m("Print tree");
+            tree.print();
 
+            U.m("Finding random position in tree...");
+            Node[] nodes;
+            for (int i = 0; i < 10; ++i){
+                nodes = tree.getRandomNonTerminalNode();
+                U.m(i + " - FINAL FOUND: prev=\"" + nodes[0] + "\", node=\"" + nodes[1] + "\"");
+            }
+            
             //trunc
 
             //
         }
 
         private void testRandomGenerators() {
-            U.pl("*** Testing random");
+            U.m("\n*** Testing random");
             for (int i = 0; i < 10; ++i) {
-                U.pl(U.randomVal());
+                U.m(U.randomVal());
             }
         }
     }

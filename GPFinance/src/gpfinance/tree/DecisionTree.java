@@ -1,6 +1,8 @@
 package gpfinance.tree;
 
 import gpfinance.U;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 
 /**
@@ -12,6 +14,11 @@ public class DecisionTree {
     private Node root = null;
     private int numNodes = 5;
     private char type = 'F';
+    private enum NODE {
+        PREV(0), CURR(1);
+        int i;
+        NODE(int i) { this.i = i; }
+    };
 
     public DecisionTree() {
         init();
@@ -25,6 +32,7 @@ public class DecisionTree {
 
     private void init() {
         root = getRandomNode();
+        root.i = 0;
 
         for (int i = 0; i < numNodes; ++i) {
             insertRandom();
@@ -41,8 +49,8 @@ public class DecisionTree {
 
         // Get random leaf node
         Node[] nodes = getRandomTerminalNode();
-        Node prev = nodes[0];
-        Node node = nodes[1];
+        Node prev = nodes[NODE.PREV.i];
+        Node node = nodes[NODE.CURR.i];
 
         // Replace either left or right with a random CriteriaNode
         if (prev == null) {
@@ -62,10 +70,6 @@ public class DecisionTree {
         }
     }
 
-    public int size() {
-        return size(root);
-    }
-
     public Node[] getRandomTerminalNode() {
         Node node = root;
         Node prev = null;
@@ -74,20 +78,47 @@ public class DecisionTree {
         // If tree has only a root node
         if (node.isLeaf()) {
             return nodes;
+        } else {
+            do {
+                prev = node;
+                node = U.chance() ? node.left : node.right;
+            } while (!node.isLeaf());
+
+            nodes[NODE.PREV.i] = prev;
+            nodes[NODE.CURR.i] = node;
         }
 
-        do {
-            prev = node;
-            node = U.chance() ? node.left : node.right;
-        } while (!node.isLeaf());
-
-        nodes[0] = prev;
-        nodes[1] = node;
         return nodes;
     }
     
-    public Node[] getRandomNonTerminalNode() {
-        return null;
+    public Node[] getRandomNonTerminalNode(){
+        Node[] nodes = {null, root};
+        
+        // make list of non-terminal nodes
+        ArrayList<Node[]> list = new ArrayList();
+        addAllToList(list, root, null);
+        
+        // choose random pair
+        nodes = list.get(new Random().nextInt(list.size()));
+        
+        return nodes;
+    }
+    
+    public void addAllToList(ArrayList<Node[]> list, Node next, Node prev){
+        if (!next.isLeaf()){
+            if (next != root){
+                Node[] nodes = new Node[2];
+                nodes[0] = prev;
+                nodes[1] = next;
+                list.add(nodes);
+            }
+            addAllToList(list, next.left, next);
+            addAllToList(list, next.right, next);
+        }
+    }
+    
+    public int size() {
+        return size(root);
     }
 
     private int size(Node node) {
@@ -100,7 +131,11 @@ public class DecisionTree {
         return size;
     }
 
-    public void printTree() {
-        root.print();
+    public int avgDepth() {
+        return (int) (Math.log(size()) / Math.log(2));
+    }
+
+    public void print() {
+        root.printChain();
     }
 }

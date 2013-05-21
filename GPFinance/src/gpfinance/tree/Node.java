@@ -1,8 +1,6 @@
 
 package gpfinance.tree;
 
-import java.util.Iterator;
-
 /**
  * @date   2013-06-01
  * @author Simon van Dyk, Stuart Reid
@@ -10,6 +8,7 @@ import java.util.Iterator;
 public class Node {
     public Node left;
     public Node right;
+    public int i;
     
     public Node() { }
 
@@ -20,7 +19,7 @@ public class Node {
     
     public boolean isLeaf(){ return false; }
     
-    public void print(){
+    public void printChain(){
         print("", true);
     }
 

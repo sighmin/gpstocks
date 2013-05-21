@@ -1,39 +1,55 @@
-
 package gpfinance;
 
-
 /**
- * @date   2013-06-01
+ * @date 2013-06-01
  * @author Simon van Dyk, Stuart Reid
  */
 public class GPFinance {
+
     public static void main(String[] args) {
         // Parse args
         String cmds = "";
-        for (String s : args)
+        for (String s : args) {
             cmds += s + " ";
-        
+        }
+
         // Dispatch command
-        if (cmds.contains("test")){
-            test(args);
-        } else if (cmds.contains("run")){
-            run(args);
-        } else if (cmds.contains("help")){
-            help();
-        } else {
-            usage();
+        try {
+            if (cmds.contains("test")) {
+                test(args);
+            } else if (cmds.contains("run")) {
+                run(args);
+            } else if (cmds.contains("help")) {
+                help();
+            } else {
+                usage();
+            }
+        } catch (Exception e) {
+            U.pl("Exception caught in main.");
+            U.pl(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            U.m("\nGPFinance run complete.");
         }
     }
-    
-    public static void run(String[] args){
-        new Simulator().run(args);
+
+    public static void run(String[] args) throws Exception {
+        final int numsims = 3;
+        Simulator[] sims = new Simulator[numsims];
+
+        for (Simulator s : sims) {
+            (s = new Simulator(args)).run();
+        }
+        for (Simulator s : sims) {
+            s.join();
+        }
     }
-    
-    public static void test(String[] args){
-        new Simulator().test(args);
+
+    public static void test(String[] args) throws Exception {
+        (new Simulator(args)).test();
     }
-    
-    public static void usage(){
+
+    public static void usage() {
         U.pl(""
                 + "NAME\n"
                 + "    GPFiance.jar - Uses genetic programming to evolve a decision "
@@ -44,8 +60,8 @@ public class GPFinance {
                 + "    java -jar GPFinance.jar run [fundamental|technical] [OPTIONS]\n"
                 + "    java -jar GPFinance.jar test [all|random|tree|datatypes]\n");
     }
-    
-    public static void help(){
+
+    public static void help() {
         U.pl(""
                 + "NAME\n"
                 + "    GPFiance.jar - Uses genetic programming to evolve a decision "
@@ -76,5 +92,4 @@ public class GPFinance {
                 + "          Tests the decision tree implementation operations.\n"
                 + "");
     }
-    
 }
