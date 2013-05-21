@@ -72,6 +72,8 @@ public class Simulator extends Thread {
             for (Indicator d : fundInd) {
                 U.m(d);
             }
+            
+            // data type cloning (deep copies)
         }
 
         private void testTree() {
@@ -92,9 +94,22 @@ public class Simulator extends Thread {
                 U.m(i + " - FINAL FOUND: prev=\"" + nodes[0] + "\", node=\"" + nodes[1] + "\"");
             }
             
-            //trunc
-
-            //
+            // trunc
+            
+        }
+        
+        private void testSelection(){
+            //random
+            //mu+lambda
+            //rank based
+        }
+        
+        private void testMutation(){
+            // 6 types
+        }
+        
+        private void testCrossover(){
+            // destructive sexual crossover
         }
 
         private void testRandomGenerators() {
