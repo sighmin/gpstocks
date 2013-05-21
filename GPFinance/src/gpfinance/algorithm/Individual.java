@@ -2,6 +2,7 @@
 package gpfinance.algorithm;
 
 import gpfinance.tree.DecisionTree;
+import java.util.Comparator;
 
 /**
  * @date   2013-06-01
@@ -27,4 +28,13 @@ public class Individual {
     public void measure(int t){
         
     }
+    
+    public static Comparator<Individual> IndividualComparator = new Comparator<Individual>(){
+        @Override
+        public int compare(Individual o1, Individual o2) {
+            Double d1 = o1.fitness;
+            Double d2 = o2.fitness;
+            return d1.compareTo(d2);
+        }
+    };
 }
