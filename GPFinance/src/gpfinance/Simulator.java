@@ -1,6 +1,6 @@
 package gpfinance;
 
-import gpfinance.algorithm.GP;
+import gpfinance.algorithm.*;
 import gpfinance.datatypes.*;
 import gpfinance.tree.*;
 

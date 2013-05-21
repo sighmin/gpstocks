@@ -29,6 +29,10 @@ public class Individual {
         
     }
     
+    public double getFitness(){
+        return this.fitness;
+    }
+    
     public static Comparator<Individual> IndividualComparator = new Comparator<Individual>(){
         @Override
         public int compare(Individual o1, Individual o2) {
