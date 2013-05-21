@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MorningstarExtractor {
@@ -29,7 +30,7 @@ public class MorningstarExtractor {
         for (int i = 0; i < indicatorsToE.length; i++) {
             indicatorsToExtract.add(indicatorsToE[i]);
         }
-        
+
         if (years[0].equals("2003")) {
             yearsToExtract.add(9);
         }
@@ -66,7 +67,7 @@ public class MorningstarExtractor {
             String line = br.readLine();
             while (line != null) {
                 String[] lineSplitComma = line.split(",");
-                if (lineSplitComma.length > 5) {
+                if (lineSplitComma.length > 10) {
                     int size = yearsToExtract.size();
                     Indicator indicator = new Indicator(lineSplitComma[0], size);
                     for (int i = 0; i < yearsToExtract.size(); i++) {
@@ -76,20 +77,8 @@ public class MorningstarExtractor {
                 }
                 line = br.readLine();
             }
-        } catch (Exception e) {
-        }
-    }
-
-    public void printData() {
-        for (int i = 0; i < rawData.size(); i++) {
-            if (indicatorsToExtract.contains(i)) {
-                System.out.print(rawData.get(i).indicatorName);
-
-                for (int j = 0; j < rawData.get(i).values.length; j++) {
-                    System.out.print("," + rawData.get(i).values[j]);
-                }
-                System.out.print("\n");
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -100,38 +89,64 @@ public class MorningstarExtractor {
             for (int i = 0; i < rawData.size(); i++) {
                 if (indicatorsToExtract.contains(rawData.get(i).indicatorName)) {
                     fw.write(rawData.get(i).indicatorName);
-
                     for (int j = 0; j < rawData.get(i).values.length; j++) {
                         fw.write("," + rawData.get(i).values[j]);
                     }
+
                     fw.write("\n");
                     fw.flush();
                 }
             }
-        } catch (Exception e) {
+
+            FileReader fr = new FileReader(outputFileName);
+            BufferedReader br = new BufferedReader(fr);
+            String lineOut = br.readLine();
+            
+            boolean hadRD = false;
+            
+            while (lineOut != null) {
+                String lineOutSplit[] = lineOut.split(",");
+                if (lineOutSplit[0].equals("R&D")) {
+                    hadRD = true;
+                    break;
+                }
+                lineOut = br.readLine();
+            }
+
+            if (hadRD == false) {
+                String RNDAvgOut = "R&D,13.575769,13.575769";
+                fw.write(RNDAvgOut);
+                System.out.println("R&D");
+            }
+
+            fw.close();
+            br.close();
+            fr.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static void main(String args[]) {
         String[] years = {"2010", "2011"};
         /*
- 2 gross margin
- 4 operating margin
- 6 EPS 
- 10 Book value per share
- 20 SG&A as a % of sales
- 21 R&D as a % of sales
- 29 Return on assets
- 31 Return on equity
- 32 Return on invested capital
- 53 Cap Ex as a % of Sales (growth yoy)
- 59 Inventory (growth yoy)
- 61 Total Current Assets (growth yoy)
- 70 Total Current Liabilities (growth yoy)
- 76 Current Ratio
- 77 Quick Ratio
- 85 Inventory Turnover
- */
+         2 gross margin
+         4 operating margin
+         6 EPS 
+         10 Book value per share
+         20 SG&A as a % of sales
+         21 R&D as a % of sales
+         29 Return on assets
+         31 Return on equity
+         32 Return on invested capital
+         53 Cap Ex as a % of Sales (growth yoy)
+         59 Inventory (growth yoy)
+         61 Total Current Assets (growth yoy)
+         70 Total Current Liabilities (growth yoy)
+         76 Current Ratio
+         77 Quick Ratio
+         */
         String[] indicators = {
             "Gross Margin %",
             "Operating Margin %",
@@ -143,12 +158,10 @@ public class MorningstarExtractor {
             "Return on Equity %",
             "Return on Invested Capital %",
             "Cap Ex as a % of Sales",
-            "Inventory",
             "Total Current Assets",
             "Total Current Liabilities",
             "Current Ratio",
-            "Quick Ratio",
-            "Inventory Turnover"};
+            "Quick Ratio"};
 
         // Directory path here
         String path = "Morningstar";
@@ -160,8 +173,8 @@ public class MorningstarExtractor {
 
             if (listOfFiles[i].isFile()) {
                 files = listOfFiles[i].getName();
-                
-                MorningstarExtractor extractor = new MorningstarExtractor(years, indicators, "Morningstar/"+files);
+
+                MorningstarExtractor extractor = new MorningstarExtractor(years, indicators, "Morningstar/" + files);
                 extractor.extractData();
                 extractor.writeDataToFile();
             }
