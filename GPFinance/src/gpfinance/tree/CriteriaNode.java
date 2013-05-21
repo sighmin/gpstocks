@@ -14,12 +14,21 @@ public class CriteriaNode extends Node {
     public Indicator indicator;
     public char inequality;
     public double value;
+    private char analysisType = 'F';
 
     public CriteriaNode(Node left, Node right, Indicator indicator, char inequality, double value) {
         super(left, right);
         this.indicator = indicator;
         this.inequality = inequality;
         this.value = value;
+    }
+    
+    public CriteriaNode(Node left, Node right, Indicator indicator, char inequality, double value, char analysisType) {
+        super(left, right);
+        this.indicator = indicator;
+        this.inequality = inequality;
+        this.value = value;
+        this.analysisType = analysisType;
     }
 
     public static CriteriaNode getRandomFundNode() {
@@ -48,5 +57,25 @@ public class CriteriaNode extends Node {
     @Override
     public String toString() {
         return indicator.toString() + " " + inequality + " " + Double.toString(value).substring(0, 6);
+    }
+
+    public void swapInequality() {
+        if (inequality == '<'){
+            inequality = '>';
+        } else {
+            inequality = '<';
+        }
+    }
+
+    public void randomizeIndicator() {
+        if (analysisType == 'F'){
+            indicator = Fund.getRandom();
+        } else {
+            indicator = Tech.getRandom();
+        }
+    }
+    
+    public void gaussValue() {
+        value = value + U.getRandomGauss();
     }
 }

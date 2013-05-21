@@ -41,4 +41,31 @@ public class Individual {
             return d1.compareTo(d2);
         }
     };
+
+    /*
+     * Mutation methods, delegate to tree. 
+     */
+    void mutateGrow() {
+        tree.insertRandom();
+    }
+
+    void mutateTrunc() {
+        tree.removeRandom();
+    }
+
+    void mutateGauss() {
+        tree.gaussRandom();
+    }
+
+    void mutateSwapInequality() {
+        tree.swapRandomInequality();
+    }
+
+    void mutateLeaf() {
+        tree.mutateTerminalNode();
+    }
+
+    void mutateNonLeaf() {
+        tree.mutateNonterminalNode();
+    }
 }

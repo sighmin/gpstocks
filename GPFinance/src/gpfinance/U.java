@@ -1,6 +1,7 @@
 
 package gpfinance;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -14,6 +15,7 @@ public class U {
     public static final double MAX = 100.0;
     public static final double MIN = -100.0;
     public static final boolean debug = true;
+    public static double MEAN = 0.0;
     
     /**
      * Set of methods to print the object passed.
@@ -33,4 +35,24 @@ public class U {
     public static boolean chance(){ return Math.random() < 0.5; }
     public static double randomVal() { return (MIN + (Math.random() * ((MAX - MIN) + 1.0)) * 0.85); }
     public static int randomTreeIndex(int size) { return (new Random()).nextInt(size-1) +1; }
+    
+    public static double getRandomGauss(double... DEVIATION){
+        if (DEVIATION.length == 0){ DEVIATION = new double[1]; DEVIATION[0] = 1.0; }
+        double q, u, v, x, y;
+        SecureRandom random = new SecureRandom();
+        do {
+            u = random.nextDouble(); v = random.nextDouble();
+            if (u <= 0.0 || v <= 0.0) {
+                u = 1.0;
+                v = 1.0;
+            }
+            v = 1.7156 * (v - 0.5);
+            x = u - 0.449871;
+            y = Math.abs(v) + 0.386595;
+            q = x * x + y * (0.19600 * y - 0.25472 * x);
+            if (q < 0.27597) { break; }
+        } while ((q > 0.27846) || (v * v > -4.0 * Math.log(u) * u * u));
+        
+        return (MEAN + DEVIATION[0] * v / u);
+    }
 }

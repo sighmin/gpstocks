@@ -88,7 +88,7 @@ public class Simulator extends Thread {
             U.m("Finding random positions in tree...");
             Node[] nodes;
             for (int i = 0; i < 3; ++i){
-                nodes = tree.getRandomNonTerminalNode();
+                nodes = tree.getRandomNonterminalNode();
                 U.m(i + " - FINAL FOUND: prev=\"" + nodes[0] + "\", node=\"" + nodes[1] + "\"");
             }
             
@@ -99,8 +99,13 @@ public class Simulator extends Thread {
 
         private void testRandomGenerators() {
             U.m("\n*** Testing random");
+            U.m("...test randomVal()");
             for (int i = 0; i < 10; ++i) {
                 U.m(U.randomVal());
+            }
+            U.m("...test gauss random");
+            for (int i = 0; i < 10; ++i) {
+                U.m(U.getRandomGauss((double)i));
             }
         }
     }
