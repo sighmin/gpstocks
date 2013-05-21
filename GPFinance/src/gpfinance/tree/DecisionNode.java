@@ -19,4 +19,22 @@ public class DecisionNode extends Node {
         super(null, null);
         this.decision = decision;
     }
+    
+    public static DecisionNode getRandom(){
+        return new DecisionNode(Decision.getRandom());
+    }
+    
+    @Override
+    public boolean isLeaf(){
+        return true;
+    }
+        
+    @Override
+    public String toString(){
+        String tmp = decision.toString();
+        int padd = 12 - tmp.length();
+        for (int i = 0; i < padd; ++i)
+            tmp += " ";
+        return tmp;
+    }
 }

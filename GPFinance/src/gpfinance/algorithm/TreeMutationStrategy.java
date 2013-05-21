@@ -1,6 +1,7 @@
 
 package gpfinance.algorithm;
 
+import gpfinance.algorithm.interfaces.MutationStrategy;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +18,7 @@ public class TreeMutationStrategy implements MutationStrategy {
     
     @Override
     public ArrayList<Individual> mutate(ArrayList<Individual> population, double progress){
-        return null;
+        ArrayList<Individual> mutatedOffspring = new ArrayList();
+        return mutatedOffspring;
     }
 }

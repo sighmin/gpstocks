@@ -1,6 +1,8 @@
 
 package gpfinance.algorithm;
 
+import gpfinance.algorithm.interfaces.SelectionStrategy;
+import gpfinance.algorithm.interfaces.CrossoverStrategy;
 import java.util.ArrayList;
 
 /**
@@ -19,6 +21,11 @@ public class SexualCrossoverStrategy implements CrossoverStrategy {
     
     @Override
     public ArrayList<Individual> crossover(ArrayList<Individual> population, double progress){
-        return null;
+        ArrayList<Individual> crossoverOffspring = new ArrayList();
+        return crossoverOffspring;
+    }
+    
+    private void crossoverPair(Individual parent1, Individual parent2){
+        
     }
 }

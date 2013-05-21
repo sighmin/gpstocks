@@ -1,6 +1,8 @@
 
 package gpfinance.datatypes;
 
+import java.util.Random;
+
 /**
  * @date   2013-06-01
  * @author Simon van Dyk, Stuart Reid
@@ -23,5 +25,9 @@ public enum Decision {
     
     public String getLabel() {
         return label;
+    }
+    
+    public static Decision getRandom(){
+        return Decision.values()[Math.random() > 0.5 ? 0 : 1];
     }
 }

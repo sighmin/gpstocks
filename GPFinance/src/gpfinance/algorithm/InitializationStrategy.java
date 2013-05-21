@@ -9,15 +9,15 @@ import java.util.ArrayList;
  */
 public class InitializationStrategy {
     
-    public InitializationStrategy(){
-        
+    private char analysisType;
+
+    public InitializationStrategy(char analysisType) {
+        this.analysisType = analysisType;
     }
     
     public void init(ArrayList<Individual> population){
         for (Individual individual : population){
-            // Generate tree
-            
-            // Init individual with tree
+            individual = new Individual(analysisType);
         }
     }
 }
