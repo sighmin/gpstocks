@@ -32,7 +32,7 @@ public class DecisionNode extends Node {
     @Override
     public String toString(){
         String tmp = decision.toString();
-        int padd = 9 - tmp.length();
+        int padd = 12 - tmp.length();
         for (int i = 0; i < padd; ++i)
             tmp += " ";
         return tmp;

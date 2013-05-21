@@ -12,15 +12,15 @@ public class Simulator {
     public Simulator() {
     }
 
-    public void run() {
+    public void run(String[] args) {
+        
     }
     
     public void test(String[] args) {
-        new Test(args);
+        Test test = new Test(args);
     }
 
     private class Test {
-
         public Test(String[] args) {
             // Parse
             String c = "";
@@ -73,15 +73,8 @@ public class Simulator {
             // size
             U.pl("Size: " + tree.size());
             // print
-            U.pl("Small tree display method:");
-            tree.displaySmallTree();
-            
-            U.pl("Large tree display method:");
-            tree = new DecisionTree('F', 25);
-            tree.displayLargeTree();
-
-
-            //grow
+            U.pl("Print tree");
+            tree.printTree();
 
             //trunc
 

@@ -26,10 +26,7 @@ public class GPFinance {
     }
     
     public static void run(String[] args){
-        // Parse args
-        
-        // Run Simulation
-        
+        new Simulator().run(args);
     }
     
     public static void test(String[] args){

@@ -40,7 +40,7 @@ public class DecisionTree {
         CriteriaNode newNode = getRandomNode();
 
         // Get random leaf node
-        Node[] nodes = getRandomLeaf();
+        Node[] nodes = getRandomTerminalNode();
         Node prev = nodes[0];
         Node node = nodes[1];
 
@@ -66,7 +66,7 @@ public class DecisionTree {
         return size(root);
     }
 
-    public Node[] getRandomLeaf() {
+    public Node[] getRandomTerminalNode() {
         Node node = root;
         Node prev = null;
         Node[] nodes = {prev, root};
@@ -85,6 +85,10 @@ public class DecisionTree {
         nodes[1] = node;
         return nodes;
     }
+    
+    public Node[] getRandomNonTerminalNode() {
+        return null;
+    }
 
     private int size(Node node) {
         int size = 0;
@@ -95,45 +99,8 @@ public class DecisionTree {
         }
         return size;
     }
-    
-    public void displaySmallTree() {
-        Stack globalStack = new Stack();
-        globalStack.push(root);
-        int emptyLeaf = 32;
-        boolean isRowEmpty = false;
-        while (isRowEmpty == false) {
 
-            Stack localStack = new Stack();
-            isRowEmpty = true;
-            for (int j = 0; j < emptyLeaf; j++) {
-                System.out.print(' ');
-            }
-            while (globalStack.isEmpty() == false) {
-                Node temp = (Node) globalStack.pop();
-                if (temp != null) {
-                    System.out.print(temp);
-                    localStack.push(temp.left);
-                    localStack.push(temp.right);
-                    if (temp.left != null || temp.right != null) {
-                        isRowEmpty = false;
-                    }
-                } else {
-                    localStack.push(null);
-                    localStack.push(null);
-                }
-                for (int j = 0; j < emptyLeaf * 2 - 2; j++) {
-                    System.out.print(' ');
-                }
-            }
-            System.out.println();
-            emptyLeaf /= 2;
-            while (localStack.isEmpty() == false) {
-                globalStack.push(localStack.pop());
-            }
-        }
-    }
-
-    public void displayLargeTree() {
+    public void printTree() {
         root.print();
     }
 }

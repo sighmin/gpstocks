@@ -47,6 +47,6 @@ public class CriteriaNode extends Node {
 
     @Override
     public String toString() {
-        return indicator.toString() + "" + inequality + "" + Double.toString(value).substring(0, 5);
+        return indicator.toString() + " " + inequality + " " + Double.toString(value).substring(0, 6);
     }
 }
