@@ -3,6 +3,7 @@ package gpfinance.algorithm;
 
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @date   2013-06-01
@@ -10,9 +11,7 @@ import java.util.ArrayList;
  */
 public class RankBasedSelectionStrategy implements SelectionStrategy {
     
-    public RankBasedSelectionStrategy(){
-        
-    }
+    public RankBasedSelectionStrategy(){ }
     
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> pool){
@@ -21,6 +20,14 @@ public class RankBasedSelectionStrategy implements SelectionStrategy {
     
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize){
-        return null;
+        ArrayList<Individual> selected = new ArrayList(selectionSize);
+        
+        // Rank pool (sort)
+        Collections.sort(pool, Individual.IndividualComparator);
+        
+        // Sample ranked pool
+        
+        
+        return selected;
     }
 }
