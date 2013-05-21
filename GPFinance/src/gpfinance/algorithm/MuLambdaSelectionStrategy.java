@@ -1,6 +1,7 @@
 
 package gpfinance.algorithm;
 
+import gpfinance.algorithm.interfaces.SelectionStrategy;
 import java.util.ArrayList;
 
 /**

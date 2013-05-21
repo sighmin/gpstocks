@@ -1,6 +1,7 @@
 
-package gpfinance.algorithm;
+package gpfinance.algorithm.interfaces;
 
+import gpfinance.algorithm.Individual;
 import java.util.ArrayList;
 
 /**

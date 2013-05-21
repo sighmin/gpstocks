@@ -9,6 +9,15 @@ import gpfinance.tree.DecisionTree;
  */
 public class Individual {
     private DecisionTree tree;
+    private double fitness = Double.NEGATIVE_INFINITY;
+    
+    public Individual(char type){
+        this.tree = new DecisionTree(type);
+    }
+
+    public Individual(DecisionTree tree) {
+        this.tree = tree;
+    }
     
     @Override
     public Individual clone(){

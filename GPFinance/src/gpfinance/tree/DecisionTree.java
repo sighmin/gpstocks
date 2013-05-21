@@ -21,6 +21,10 @@ public class DecisionTree {
         init();
     }
 
+    public DecisionTree(char type) {
+        this.type = type;        
+    }    
+
     public DecisionTree(char type, int numNodes) {
         this.numNodes = numNodes;
         this.type = type;
@@ -29,7 +33,6 @@ public class DecisionTree {
 
     private void init() {
         root = getRandomNode();
-        root.i = 0;
 
         for (int i = 0; i < numNodes; ++i) {
             insertRandom();
