@@ -14,11 +14,8 @@ public class DecisionTree {
     private Node root = null;
     private int numNodes = 5;
     private char type = 'F';
-    private enum NODE {
-        PREV(0), CURR(1);
-        int i;
-        NODE(int i) { this.i = i; }
-    };
+    private static final int PREV = 0;
+    private static final int CURR = 1;
 
     public DecisionTree() {
         init();
@@ -49,8 +46,8 @@ public class DecisionTree {
 
         // Get random leaf node
         Node[] nodes = getRandomTerminalNode();
-        Node prev = nodes[NODE.PREV.i];
-        Node node = nodes[NODE.CURR.i];
+        Node prev = nodes[PREV];
+        Node node = nodes[CURR];
 
         // Replace either left or right with a random CriteriaNode
         if (prev == null) {
@@ -84,36 +81,38 @@ public class DecisionTree {
                 node = U.chance() ? node.left : node.right;
             } while (!node.isLeaf());
 
-            nodes[NODE.PREV.i] = prev;
-            nodes[NODE.CURR.i] = node;
+            nodes[PREV] = prev;
+            nodes[CURR] = node;
         }
 
         return nodes;
     }
     
     public Node[] getRandomNonTerminalNode(){
-        Node[] nodes = {null, root};
-        
-        // make list of non-terminal nodes
+        // make list of non-terminal node pairs (prev, curr)
         ArrayList<Node[]> list = new ArrayList();
-        addAllToList(list, root, null);
+        constructListOfNonTerminalPairs(list);
+        U.pl("Num non terminals: " + list.size());
         
         // choose random pair
-        nodes = list.get(new Random().nextInt(list.size()));
-        
-        return nodes;
+        return list.get(new Random().nextInt(list.size()));
     }
     
-    public void addAllToList(ArrayList<Node[]> list, Node next, Node prev){
+    public void constructListOfNonTerminalPairs(ArrayList<Node[]> list){
+        constructListOfNonTerminalPairsRec(list, root.left, root);
+        constructListOfNonTerminalPairsRec(list, root.right, root);
+    }
+    
+    private void constructListOfNonTerminalPairsRec(ArrayList<Node[]> list, Node next, Node prev){
         if (!next.isLeaf()){
-            if (next != root){
-                Node[] nodes = new Node[2];
-                nodes[0] = prev;
-                nodes[1] = next;
-                list.add(nodes);
-            }
-            addAllToList(list, next.left, next);
-            addAllToList(list, next.right, next);
+            // Add current node to list
+            Node[] nodes = new Node[2];
+            nodes[PREV] = prev;
+            nodes[CURR] = next;
+            list.add(nodes);
+            // Move along to add current nodes children
+            constructListOfNonTerminalPairsRec(list, next.left, next);
+            constructListOfNonTerminalPairsRec(list, next.right, next);
         }
     }
     

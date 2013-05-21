@@ -85,9 +85,9 @@ public class Simulator extends Thread {
             U.m("Print tree");
             tree.print();
 
-            U.m("Finding random position in tree...");
+            U.m("Finding random positions in tree...");
             Node[] nodes;
-            for (int i = 0; i < 10; ++i){
+            for (int i = 0; i < 3; ++i){
                 nodes = tree.getRandomNonTerminalNode();
                 U.m(i + " - FINAL FOUND: prev=\"" + nodes[0] + "\", node=\"" + nodes[1] + "\"");
             }
