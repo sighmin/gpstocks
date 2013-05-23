@@ -155,6 +155,36 @@ public class Simulator extends Thread {
         }
 
         private void crossover() {
+            // init individuals
+            int num = 1;
+            Individual[] i1 = new Individual[num];
+            Individual[] i2 = new Individual[num];
+            for (int i = 0; i < num; ++i){
+                i1[i] = new Individual('F');
+                i2[i] = new Individual('F');
+            }
+            // print before
+            U.m("Before crossover:");
+            for (int i = 0; i < num; ++i){
+                i1[i].print();
+                i2[i].print();
+            }
+            
+            // crossover
+            SexualCrossoverStrategy cross = new SexualCrossoverStrategy(0.8, new RandomSelectionStrategy());
+            for (int k = 0; k < 10; ++k){
+                for (int i = 0; i < num; ++i){
+                    cross.crossoverPair(i1[i], i2[i]);
+                }
+            }
+            
+            // print after
+            U.m("After crossover:");
+            for (int i = 0; i < num; ++i){
+                i1[i].print();
+                i2[i].print();
+            }
+            
         }
         
         private void mutation() {
@@ -170,7 +200,6 @@ public class Simulator extends Thread {
             U.m("After grow:");
             in.print();
             
-            
             //trunc
            /*
             * as seen below (performing half of the trunc operations as mutations)
@@ -179,8 +208,6 @@ public class Simulator extends Thread {
             * maybe take depth into account here, otherwise with large trees it may
             * become too destructive, simply chopping potentially good branches.
             */
-            
-            
             U.m("Before trunc:");
             in.print();
             for (int i = 0; i < mutations/2; ++i){
