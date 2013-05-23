@@ -30,4 +30,9 @@ public class Node {
         if (right != null)
             right.print(prefix + (isTail ? "    " : "│   "), right == null);
     }
+    
+    @Override
+    public Node clone(){
+        return new Node(this.left.clone(), this.right.clone());
+    }
 }

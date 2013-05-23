@@ -30,4 +30,9 @@ public class RankBasedSelectionStrategy implements SelectionStrategy {
         
         return selected;
     }
+    
+    @Override
+    public RankBasedSelectionStrategy clone(){
+        return new RankBasedSelectionStrategy();
+    }
 }

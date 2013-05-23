@@ -20,6 +20,11 @@ public class TreeMutationStrategy implements MutationStrategy {
     }
     
     @Override
+    public TreeMutationStrategy clone(){
+        return new TreeMutationStrategy(this.rates.clone());
+    }
+    
+    @Override
     public ArrayList<Individual> mutate(ArrayList<Individual> population, double progress){
         ArrayList<Individual> mutatedOffspring = new ArrayList();
         return mutatedOffspring;

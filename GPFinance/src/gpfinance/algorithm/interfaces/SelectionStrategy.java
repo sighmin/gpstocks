@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * @author Simon van Dyk, Stuart Reid
  */
 public interface SelectionStrategy {
+    public SelectionStrategy clone();
     public ArrayList<Individual> select(ArrayList<Individual> pool);
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize);
 }

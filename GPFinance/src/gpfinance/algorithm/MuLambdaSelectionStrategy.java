@@ -4,7 +4,6 @@ package gpfinance.algorithm;
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 /**
  * @date   2013-06-01
@@ -32,5 +31,10 @@ public class MuLambdaSelectionStrategy implements SelectionStrategy {
         }
         
         return selected;
+    }
+    
+    @Override
+    public MuLambdaSelectionStrategy clone(){
+        return new MuLambdaSelectionStrategy();
     }
 }

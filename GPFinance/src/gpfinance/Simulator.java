@@ -73,6 +73,9 @@ public class Simulator extends Thread {
             if (c.contains("crossover")){
                 crossover();
             }
+            if (c.contains("clone")){
+                clonetest();
+            }
             if (c.contains("adhoc")){
                 adhoc();
             }
@@ -122,20 +125,6 @@ public class Simulator extends Thread {
             // trunc
             
         }
-        
-        private void testSelection(){
-            //random
-            //mu+lambda
-            //rank based
-        }
-        
-        private void testMutation(){
-            // 6 types
-        }
-        
-        private void testCrossover(){
-            // destructive sexual crossover
-        }
 
         private void testRandomGenerators() {
             U.m("\n*** Testing random");
@@ -165,6 +154,9 @@ public class Simulator extends Thread {
         private void selection() {
         }
 
+        private void crossover() {
+        }
+        
         private void mutation() {
             Individual in = new Individual('F');
             int mutations = 10;
@@ -236,26 +228,36 @@ public class Simulator extends Thread {
             /**/
             
         }
-
-        private void crossover() {
+        
+        private void clonetest(){
+            // clone testing
+            DecisionTree tree = new DecisionTree('F');
+            DecisionTree betterTree = tree.clone();
+            
+            U.m("Before edit original\n*** tree:");
+            tree.print();
+            U.m("*** betterTreee");
+            betterTree.print();
+            
+            // Alter betterTree and see if tree changes at all...
+            for (int i = 0; i < 5; ++i){
+                tree.insertRandom();
+                tree.gaussRandom();
+                tree.gaussRandom();
+                tree.mutateNonterminalNode();
+                tree.mutateTerminalNode();
+                tree.swapRandomInequality();
+                tree.removeRandomLimitedDepth();
+            }
+            
+            U.m("After edit original\n*** tree:");
+            tree.print();
+            U.m("*** betterTreee");
+            betterTree.print();
         }
         
         private void adhoc(){
-//            DecisionTree tree = new DecisionTree('F');
-//            
-//            U.m("Before grow:");
-//            tree.print();
-//            for (int i = 0; i < 15; ++i){
-//                tree.insertRandom();
-//            }
-//            U.m("After grow, Before trunc:");
-//            tree.print();
-//            for (int i = 0; i < 10; ++i){
-//                tree.removeRandomLimitedDepth();
-//                tree.print();
-//            }
-//            U.m("After trunc:");
-//            tree.print();
+
             
         }
     }

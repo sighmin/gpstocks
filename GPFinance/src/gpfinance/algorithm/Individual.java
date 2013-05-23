@@ -12,6 +12,8 @@ public class Individual {
     private DecisionTree tree;
     private double fitness = Double.NEGATIVE_INFINITY;
     
+    public Individual() {}
+    
     public Individual(char type){
         this.tree = new DecisionTree(type);
     }
@@ -20,9 +22,13 @@ public class Individual {
         this.tree = tree;
     }
     
+    public Individual(DecisionTree tree, double fitness) {
+        this.tree = tree;
+    }
+    
     @Override
     public Individual clone(){
-        return null;
+        return new Individual(this.tree.clone(), this.fitness);
     }
     
     public void measure(int t){

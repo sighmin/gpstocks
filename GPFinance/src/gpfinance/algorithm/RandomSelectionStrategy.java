@@ -31,4 +31,9 @@ public class RandomSelectionStrategy implements SelectionStrategy {
         
         return selected;
     }
+    
+    @Override
+    public RandomSelectionStrategy clone(){
+        return new RandomSelectionStrategy();
+    }
 }

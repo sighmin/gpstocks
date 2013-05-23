@@ -78,4 +78,9 @@ public class CriteriaNode extends Node {
     public void gaussValue() {
         value = value + U.getRandomGauss();
     }
+    
+    @Override
+    public CriteriaNode clone(){
+        return new CriteriaNode(this.left.clone(), this.right.clone(), this.indicator, this.inequality, this.value, this.analysisType);
+    }
 }

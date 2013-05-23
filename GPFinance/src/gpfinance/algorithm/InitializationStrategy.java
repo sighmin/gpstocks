@@ -20,4 +20,9 @@ public class InitializationStrategy {
             individual = new Individual(analysisType);
         }
     }
+    
+    @Override
+    public InitializationStrategy clone(){
+        return new InitializationStrategy(this.analysisType);
+    }
 }

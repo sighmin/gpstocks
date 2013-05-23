@@ -11,7 +11,7 @@ import java.util.Random;
 public class DecisionTree {
 
     private Node root = null;
-    private int numNodes = 5;
+    private int numNodes = 3;
     private char type = 'F';
     private static final int PREV = 0;
     private static final int CURR = 1;
@@ -30,6 +30,12 @@ public class DecisionTree {
         this.numNodes = numNodes;
         this.type = type;
         init();
+    }
+    
+    public DecisionTree(char type, int numNodes, Node root){
+        this.type = type;
+        this.numNodes = numNodes;
+        this.root = root;
     }
 
     private void init() {
@@ -137,6 +143,11 @@ public class DecisionTree {
 
     public void print() {
         root.printChain();
+    }
+    
+    @Override
+    public DecisionTree clone(){
+        return new DecisionTree(this.type, this.numNodes, (Node) this.root.clone());
     }
     
     /**

@@ -23,6 +23,11 @@ public class SexualCrossoverStrategy implements CrossoverStrategy {
     }
     
     @Override
+    public SexualCrossoverStrategy clone(){
+        return new SexualCrossoverStrategy(this.probability, this.selectionStrategy.clone());
+    }
+    
+    @Override
     public ArrayList<Individual> crossover(ArrayList<Individual> population, double progress){
         ArrayList<Individual> crossoverOffspring = new ArrayList();
         

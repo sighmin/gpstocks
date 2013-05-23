@@ -45,4 +45,9 @@ public class DecisionNode extends Node {
             tmp += " ";
         return tmp;
     }
+    
+    @Override
+    public DecisionNode clone(){
+        return new DecisionNode(this.decision);
+    }
 }
