@@ -24,6 +24,14 @@ public class DecisionNode extends Node {
         return new DecisionNode(Decision.getRandom());
     }
     
+    public void swapDecision(){
+        if (decision == Decision.BUY){
+            decision = Decision.SELL;
+        } else {
+            decision = Decision.BUY;
+        }
+    }
+    
     @Override
     public boolean isLeaf(){
         return true;

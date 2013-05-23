@@ -41,4 +41,40 @@ public class Individual {
             return d1.compareTo(d2);
         }
     };
+    
+    
+    public DecisionTree getTree() {
+        return tree;
+    }
+
+    public void print(){
+        tree.print();
+    }
+
+    /*
+     * Mutation methods, delegate to tree. 
+     */
+    public void mutateGrow() {
+        tree.insertRandom();
+    }
+
+    public void mutateTrunc() {
+        tree.removeRandomLimitedDepth();
+    }
+
+    public void mutateGauss() {
+        tree.gaussRandom();
+    }
+
+    public void mutateSwapInequality() {
+        tree.swapRandomInequality();
+    }
+
+    public void mutateLeaf() {
+        tree.mutateTerminalNode();
+    }
+
+    public void mutateNonLeaf() {
+        tree.mutateNonterminalNode();
+    }
 }

@@ -10,6 +10,9 @@ import java.util.ArrayList;
  */
 public class TreeMutationStrategy implements MutationStrategy {
     
+    
+    //                              {grow,  trunc, indicator, leaf, inequality, gauss}
+  //private double[] mutationRates = {100.0, 0.0,   0.4,       0.4,  0.4,        0.4};
     double[] rates;
     
     public TreeMutationStrategy(double[] rates){
@@ -20,5 +23,33 @@ public class TreeMutationStrategy implements MutationStrategy {
     public ArrayList<Individual> mutate(ArrayList<Individual> population, double progress){
         ArrayList<Individual> mutatedOffspring = new ArrayList();
         return mutatedOffspring;
+    }
+    
+    private void growMutation(Individual individual){
+        individual.mutateGrow();
+    }
+    
+    private void truncMutation(Individual individual){
+        individual.mutateTrunc();
+    }
+    
+    private void gaussianMutation(Individual individual){
+        // mutate a non-terminal nodes value
+        individual.mutateGauss();
+    }
+    
+    private void swapMutation(Individual individual){
+        // change inequality of a non-terminal node
+        individual.mutateSwapInequality();
+    }
+    
+    private void terminalNodeMutation(Individual individual){
+        // swap out a terminal node with it's opposite
+        individual.mutateLeaf();
+    }
+    
+    private void nonterminalNodeMutation(Individual individual){
+        // swap out a non-terminal nodes indicator
+        individual.mutateNonLeaf();
     }
 }

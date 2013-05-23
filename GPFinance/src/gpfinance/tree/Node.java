@@ -8,6 +8,7 @@ package gpfinance.tree;
 public class Node {
     public Node left;
     public Node right;
+    public short depth = 0;
     
     public Node() { }
 

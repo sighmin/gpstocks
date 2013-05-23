@@ -3,6 +3,7 @@ package gpfinance.algorithm;
 
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import gpfinance.algorithm.interfaces.CrossoverStrategy;
+import gpfinance.tree.Node;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -77,12 +78,29 @@ public class SexualCrossoverStrategy implements CrossoverStrategy {
                 crossoverOffspring.add(offspring2);
             }
         }
-       
         
         return crossoverOffspring;
     }
     
     private void crossoverPair(Individual parent1, Individual parent2){
+        final int PREV = 0; final int CURR = 1;
         // Destructive crossover, meaning, it changes the parents into the offspring
+        Node[] p1nodes = parent1.getTree().getRandomNonterminalNode(false);
+        Node[] p2nodes = parent2.getTree().getRandomNonterminalNode(false);
+        Node temp = p1nodes[CURR];
+        
+        // Replace subtree of parent1
+        if (p1nodes[PREV].left == p1nodes[CURR]){
+            p1nodes[PREV].left = p2nodes[CURR];
+        } else {
+            p1nodes[PREV].right = p2nodes[CURR];
+        }
+        
+        // Replace subtree of parent2
+        if (p2nodes[PREV].left == p2nodes[CURR]){
+            p2nodes[PREV].left = temp;
+        } else {
+            p2nodes[PREV].right = temp;
+        }
     }
 }
