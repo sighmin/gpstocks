@@ -41,6 +41,10 @@ public class Simulator extends Thread {
                 testDataTypes();
                 testTree();
                 testRandomGenerators();
+                initialization();
+                selection();
+                mutation();
+                crossover();
             }
             if (c.contains("datatypes")) {
                 testDataTypes();
@@ -50,6 +54,27 @@ public class Simulator extends Thread {
             }
             if (c.contains("random")) {
                 testRandomGenerators();
+            }
+            if (c.contains("all-operators")){
+                initialization();
+                selection();
+                mutation();
+                crossover();
+            }
+            if (c.contains("initialization")){
+                initialization();
+            }
+            if (c.contains("selection")){
+                selection();
+            }
+            if (c.contains("mutation")){
+                mutation();
+            }
+            if (c.contains("crossover")){
+                crossover();
+            }
+            if (c.contains("adhoc")){
+                adhoc();
             }
         }
 
@@ -90,7 +115,7 @@ public class Simulator extends Thread {
             U.m("Finding random positions in tree...");
             Node[] nodes;
             for (int i = 0; i < 3; ++i){
-                nodes = tree.getRandomNonterminalNode();
+                nodes = tree.getRandomNonterminalNode(false);
                 U.m(i + " - FINAL FOUND: prev=\"" + nodes[0] + "\", node=\"" + nodes[1] + "\"");
             }
             
@@ -122,6 +147,116 @@ public class Simulator extends Thread {
             for (int i = 0; i < 10; ++i) {
                 U.m(U.getRandomGauss((double)i));
             }
+        }
+
+        private void initialization() {
+            char type = 'F';
+            int numindividuals = 5;
+            Individual[] ins = new Individual[numindividuals];
+            for (int i = 0; i < numindividuals; ++i){
+                ins[i] = new Individual(type);
+            }
+            for (int i = 0; i < numindividuals; ++i){
+                U.m("Tree #" + i);
+                ins[i].print();
+            }
+        }
+
+        private void selection() {
+        }
+
+        private void mutation() {
+            Individual in = new Individual('F');
+            int mutations = 10;
+            
+            //grow
+            U.m("Before grow:");
+            in.print();
+            for (int i = 0; i < mutations; ++i){
+                in.mutateGrow();
+            }
+            U.m("After grow:");
+            in.print();
+            
+            
+            //trunc
+           /*
+            * as seen below (performing half of the trunc operations as mutations)
+            * since trunc chooses a random non terminal and replaces it was a terminal
+            * node, effectively chopping off an entire subtree... I think we should
+            * maybe take depth into account here, otherwise with large trees it may
+            * become too destructive, simply chopping potentially good branches.
+            */
+            
+            
+            U.m("Before trunc:");
+            in.print();
+            for (int i = 0; i < mutations/2; ++i){
+                in.mutateTrunc();
+            }
+            U.m("After trunc:");
+            in.print();
+            
+            
+            //swap inequality
+            U.m("Before swap inequality:");
+            in.print();
+            for (int i = 0; i < mutations; ++i){
+                in.mutateSwapInequality();
+            }
+            U.m("After swap inequality:");
+            in.print();
+            
+            //non-terminal (indicator)
+            U.m("Before indicator mutate:");
+            in.print();
+            for (int i = 0; i < mutations; ++i){
+                in.mutateNonLeaf();
+            }
+            U.m("After indicator mutate:");
+            in.print();
+            
+            //terminal (swap decisionnode)
+            U.m("Before leaf:");
+            in.print();
+            for (int i = 0; i < mutations; ++i){
+                in.mutateLeaf();
+            }
+            U.m("After leaf:");
+            in.print();
+            
+            //gauss
+            U.m("Before gauss:");
+            in.print();
+            for (int i = 0; i < mutations; ++i){
+                in.mutateGauss();
+            }
+            U.m("After gauss:");
+            in.print();
+            /**/
+            
+        }
+
+        private void crossover() {
+        }
+        
+        private void adhoc(){
+//            DecisionTree tree = new DecisionTree('F');
+//            
+//            U.m("Before grow:");
+//            tree.print();
+//            for (int i = 0; i < 15; ++i){
+//                tree.insertRandom();
+//            }
+//            U.m("After grow, Before trunc:");
+//            tree.print();
+//            for (int i = 0; i < 10; ++i){
+//                tree.removeRandomLimitedDepth();
+//                tree.print();
+//            }
+//            U.m("After trunc:");
+//            tree.print();
+            
         }
     }
 }

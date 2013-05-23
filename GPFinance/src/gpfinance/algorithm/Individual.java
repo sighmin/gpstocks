@@ -2,7 +2,6 @@
 package gpfinance.algorithm;
 
 import gpfinance.tree.DecisionTree;
-import gpfinance.tree.Node;
 import java.util.Comparator;
 
 /**
@@ -42,6 +41,15 @@ public class Individual {
             return d1.compareTo(d2);
         }
     };
+    
+    
+    public DecisionTree getTree() {
+        return tree;
+    }
+
+    public void print(){
+        tree.print();
+    }
 
     /*
      * Mutation methods, delegate to tree. 
@@ -51,7 +59,7 @@ public class Individual {
     }
 
     public void mutateTrunc() {
-        tree.removeRandom();
+        tree.removeRandomLimitedDepth();
     }
 
     public void mutateGauss() {
@@ -68,9 +76,5 @@ public class Individual {
 
     public void mutateNonLeaf() {
         tree.mutateNonterminalNode();
-    }
-
-    public DecisionTree getTree() {
-        return tree;
     }
 }

@@ -3,7 +3,6 @@ package gpfinance.tree;
 import gpfinance.U;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Stack;
 
 /**
  * @date 2013-06-01
@@ -16,14 +15,16 @@ public class DecisionTree {
     private char type = 'F';
     private static final int PREV = 0;
     private static final int CURR = 1;
+    private static final int NEXT = 2;
 
     public DecisionTree() {
         init();
     }
 
     public DecisionTree(char type) {
-        this.type = type;        
-    }    
+        this.type = type;
+        init();
+    }
 
     public DecisionTree(char type, int numNodes) {
         this.numNodes = numNodes;
@@ -32,14 +33,14 @@ public class DecisionTree {
     }
 
     private void init() {
-        root = getRandomNode();
+        root = generateRandomNonterminalNode();
 
         for (int i = 0; i < numNodes; ++i) {
             insertRandom();
         }
     }
 
-    private CriteriaNode getRandomNode() {
+    private CriteriaNode generateRandomNonterminalNode() {
         return type == 'F' ? CriteriaNode.getRandomFundNode() : CriteriaNode.getRandomTechNode();
     }
 
@@ -64,31 +65,55 @@ public class DecisionTree {
         return nodes;
     }
     
-    public Node[] getRandomNonterminalNode(){
+    public Node[] getRandomNonterminalNode(boolean depthLimited){
         // make list of non-terminal node pairs (prev, curr)
         ArrayList<Node[]> list = new ArrayList();
-        constructListOfNonTerminalPairs(list);
-        U.pl("Num non terminals: " + list.size());
+        if (!depthLimited){
+            constructListOfNonTerminalPairsRec(list, root.left, root, (short)1);
+            constructListOfNonTerminalPairsRec(list, root.right, root, (short)1);
+        } else {
+            constructListOfNonTerminalPairsLimitedDepthRec(list, root.left, root, (short)1);
+            constructListOfNonTerminalPairsLimitedDepthRec(list, root.right, root, (short)1);
+        }
+
+        if (list.isEmpty()){
+            return null;
+        }
+        int rand = new Random().nextInt(list.size());
         
         // choose random pair
-        return list.get(new Random().nextInt(list.size()));
+        return list.get(rand);
     }
     
-    public void constructListOfNonTerminalPairs(ArrayList<Node[]> list){
-        constructListOfNonTerminalPairsRec(list, root.left, root);
-        constructListOfNonTerminalPairsRec(list, root.right, root);
-    }
-    
-    private void constructListOfNonTerminalPairsRec(ArrayList<Node[]> list, Node next, Node prev){
+    private void constructListOfNonTerminalPairsRec(ArrayList<Node[]> list, Node next, Node prev, short depth){
         if (!next.isLeaf()){
             // Add current node to list
             Node[] nodes = new Node[2];
             nodes[PREV] = prev;
             nodes[CURR] = next;
+            nodes[CURR].depth = depth;
             list.add(nodes);
             // Move along to add current nodes children
-            constructListOfNonTerminalPairsRec(list, next.left, next);
-            constructListOfNonTerminalPairsRec(list, next.right, next);
+            constructListOfNonTerminalPairsRec(list, next.left, next, (short)(depth+1));
+            constructListOfNonTerminalPairsRec(list, next.right, next,(short)(depth+1));
+        }
+    }
+    
+    private void constructListOfNonTerminalPairsLimitedDepthRec(ArrayList<Node[]> list, Node next, Node prev, short depth){
+        if (!next.isLeaf()){
+            // Add current node to list if next left and right are leaves (bottom most node)
+            // nodes = {prev, node, next}
+            if (next.left.isLeaf() && next.right.isLeaf()){
+                Node[] nodes = new Node[3];
+                nodes[PREV] = prev;
+                nodes[CURR] = next;
+                nodes[NEXT] = next.left;
+                nodes[CURR].depth = depth;
+                list.add(nodes);
+            }
+            // Move along to add current nodes children
+            constructListOfNonTerminalPairsLimitedDepthRec(list, next.left, next, (short)(depth+1));
+            constructListOfNonTerminalPairsLimitedDepthRec(list, next.right, next, (short)(depth+1));
         }
     }
     
@@ -114,9 +139,13 @@ public class DecisionTree {
         root.printChain();
     }
     
+    /**
+     * Method finds a random terminal node, generates a non terminal node and replaces
+     * the terminal with the non terminal.
+     */
     public void insertRandom() {
         // Create new node
-        CriteriaNode newNode = getRandomNode();
+        CriteriaNode newNode = generateRandomNonterminalNode();
 
         // Get random leaf node
         Node[] nodes = getRandomTerminalNode();
@@ -140,9 +169,15 @@ public class DecisionTree {
             }
         }
     }
-
+    
+    /**
+     * Method find a random non terminal node, generates a random decision node
+     * and replaces the non terminal with the terminal - this is very destructive.
+     */
     public void removeRandom() {
-        Node[] nodes = getRandomNonterminalNode();
+        Node[] nodes = getRandomNonterminalNode(false);
+        if (nodes == null)
+            return;
         
         // Generate random DecisionNode to replace
         DecisionNode replacementNode = DecisionNode.getRandom();
@@ -154,15 +189,39 @@ public class DecisionTree {
             nodes[PREV].right = replacementNode;
         }
     }
+    
+    /**
+     * Method performs the same function as removeRandom(), but is limited to remove
+     * a non-terminal node that is a depth above a random terminal node.
+     */
+    public void removeRandomLimitedDepth(){
+        Node[] nodes = getRandomNonterminalNode(true); //limited depth so suppress trunc's destructiveness.
+        if (nodes == null)
+            return;
+        
+        // Generate random DecisionNode to replace
+        DecisionNode replacementNode = DecisionNode.getRandom();
+        
+        // Update prev reference
+        if (nodes[PREV].left == nodes[CURR]){
+            U.pl("Truncing: " + nodes[PREV] + ", " + nodes[CURR] + ", " + nodes[NEXT]);
+            nodes[PREV].left = replacementNode;
+        } else {
+            U.pl("Truncing: " + nodes[PREV] + ", " + nodes[CURR] + ", " + nodes[NEXT]);
+            nodes[PREV].right = replacementNode;
+        }
+    }
 
     public void gaussRandom() {
-        Node[] nodes = getRandomNonterminalNode();
-        ((CriteriaNode) nodes[1]).gaussValue();
+        Node[] nodes = getRandomNonterminalNode(false);
+        if (nodes != null)
+            ((CriteriaNode) nodes[1]).gaussValue();
     }
 
     public void swapRandomInequality() {
-        Node[] nodes = getRandomNonterminalNode();
-        ((CriteriaNode) nodes[1]).swapInequality();
+        Node[] nodes = getRandomNonterminalNode(false);
+        if (nodes != null)
+            ((CriteriaNode) nodes[1]).swapInequality();
     }
 
     public void mutateTerminalNode() {
@@ -172,7 +231,8 @@ public class DecisionTree {
 
     public void mutateNonterminalNode() {
         // swap out a non-terminal nodes indicator
-        Node[] nodes = getRandomNonterminalNode();
-        ((CriteriaNode) nodes[1]).randomizeIndicator();
+        Node[] nodes = getRandomNonterminalNode(false);
+        if (nodes != null)
+            ((CriteriaNode) nodes[1]).randomizeIndicator();
     }
 }

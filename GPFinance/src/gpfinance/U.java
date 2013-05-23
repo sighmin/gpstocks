@@ -37,7 +37,7 @@ public class U {
     public static int randomTreeIndex(int size) { return (new Random()).nextInt(size-1) +1; }
     
     public static double getRandomGauss(double... DEVIATION){
-        if (DEVIATION.length == 0){ DEVIATION = new double[1]; DEVIATION[0] = 1.0; }
+        if (DEVIATION.length == 0){ DEVIATION = new double[1]; DEVIATION[0] = 0.1; }
         double q, u, v, x, y;
         SecureRandom random = new SecureRandom();
         do {
