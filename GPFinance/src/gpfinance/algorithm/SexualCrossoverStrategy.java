@@ -1,11 +1,10 @@
 
 package gpfinance.algorithm;
 
-import gpfinance.algorithm.interfaces.SelectionStrategy;
+import gpfinance.U;
 import gpfinance.algorithm.interfaces.CrossoverStrategy;
 import gpfinance.tree.Node;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -14,93 +13,63 @@ import java.util.Random;
  */
 public class SexualCrossoverStrategy implements CrossoverStrategy {
     
-    private double probability;
-    private SelectionStrategy selectionStrategy;
+    private double initialProb;
+    private double finalProb;
+    private final int CANDIDATE = 0;
+    private final int RAND_CANDIDATE = 1;
 
-    public SexualCrossoverStrategy(double probability, SelectionStrategy selectionStrategy) {
-        this.probability = probability;
-        this.selectionStrategy = selectionStrategy;
+    public SexualCrossoverStrategy(double initialProb, double finalProb) {
+        this.initialProb = initialProb;
+        this.finalProb = finalProb;
     }
     
     @Override
     public SexualCrossoverStrategy clone(){
-        return new SexualCrossoverStrategy(this.probability, this.selectionStrategy.clone());
+        return new SexualCrossoverStrategy(this.initialProb, this.finalProb);
     }
     
     @Override
-    public ArrayList<Individual> crossover(ArrayList<Individual> population, double progress){
+    public ArrayList<Individual> crossover(ArrayList<Individual> selectedPop, double progress){
         ArrayList<Individual> crossoverOffspring = new ArrayList();
         
-        // Calulate rank-based probabilities
-        Collections.sort(population, Individual.IndividualComparator);
-        int size = population.size();
-        double sum = 0;
-        double normalsum = 0;
+        // Calc dynamic probability of crossover
+        int size = selectedPop.size();
         Random random = new Random();
-        double[] probabilities = new double[size];
-        for (int i = 0; i < size; ++i){
-            sum += (double) (i+1);
-        }
-        for (int i = 0; i < size; ++i){
-            normalsum += (probabilities[i] = (double) (i+1) / (double) size);
-        }
-        // normalize
-        for (int i = 0; i < size; ++i){
-            probabilities[i] = probabilities[i]/normalsum;
-        }
-        
-        
+        double prob = (progress * finalProb) + ((1.0 - progress) * initialProb);
+
         // Create list of pairs of parents
         ArrayList<Individual[]> pairs = new ArrayList();
-        // if rand() > prob[i], select it!
         for (int i = 0; i < size; ++i){
-            double rand = Math.random();
-            if (rand > probabilities[i]){
-                Individual[] tempPair = new Individual[2];
-                tempPair[0] = population.get(i).clone();
-                pairs.add(tempPair);
+            double r = U.r();
+            if (r < prob){
+                Individual[] pair = new Individual[2];
+                pair[CANDIDATE] = selectedPop.get(i).clone();
+                pair[RAND_CANDIDATE] = selectedPop.get(U.rint(size)).clone(); //select another random individual for the above candidate
+                pairs.add(pair);
             }
         }
         
-        // for every selected individual from above selection, select another
-        int numSelected = 0;
-        int k = 0;
-        do {
-            double rand = Math.random();
-            if (rand > probabilities[k % size]){
-                ++numSelected;
-                Individual[] tempPair = pairs.get(k % pairs.size());
-                tempPair[1] = population.get(k % size).clone();
-            }
-            ++k;
-        } while (numSelected < pairs.size());
-        
-        // Select pairs that will crossover & perfrom crossover using probability
+        // Perform crossover on all pairs
         for (int i = 0; i < pairs.size(); ++i){
-            double rand = Math.random();
-            if (rand > probability){
-                // destructively crossover pair
-                Individual offspring1;
-                Individual offspring2;
-                crossoverPair(offspring1 = pairs.get(i)[0], offspring2 = pairs.get(i)[1]);
-                
-                // add crossedover parents to crossedover list
-                crossoverOffspring.add(offspring1);
-                crossoverOffspring.add(offspring2);
-            }
+            // destructively crossover pair
+            Individual[] pair = pairs.get(i);
+            crossoverPair(pair[CANDIDATE], pair[RAND_CANDIDATE]);
+            // add crossedover parents to crossedover list
+            crossoverOffspring.add(pair[CANDIDATE]);
+            crossoverOffspring.add(pair[RAND_CANDIDATE]);
         }
         
         return crossoverOffspring;
     }
     
     //TODO: swap this back to private access
-    public void crossoverPair(Individual parent1, Individual parent2){
+    private void crossoverPair(Individual parent1, Individual parent2){
         final int PREV = 0; final int CURR = 1;
         // Destructive crossover, meaning, it changes the parents into the offspring
         Node[] p1nodes = parent1.getTree().getRandomNonterminalNode(false);
         Node[] p2nodes = parent2.getTree().getRandomNonterminalNode(false);
         
-        // if getting a node failed (fringe case, but necessary condition here
+        // if getting a node failed (fringe case, but necessary condition here)
         if (p1nodes == null || p2nodes == null){
             return;
         }

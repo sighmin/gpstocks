@@ -72,6 +72,7 @@ public class Simulator extends Thread {
             }
             if (c.contains("mutation")){
                 mutation();
+                mutationRates();
             }
             if (c.contains("crossover")){
                 crossover();
@@ -171,7 +172,7 @@ public class Simulator extends Thread {
             for (int i = 0; i < numpop; ++i){
                 pop.get(i).print();
             }
-            Collections.sort(pop, Individual.IndividualComparator);
+            Collections.sort(pop, Individual.MaximizeComparator);
             U.m("AFTER");
             for (int i = 0; i < numpop; ++i){
                 pop.get(i).print();
@@ -231,12 +232,12 @@ public class Simulator extends Thread {
             }
             
             // crossover
-            SexualCrossoverStrategy cross = new SexualCrossoverStrategy(0.8, new RandomSelectionStrategy());
-            for (int k = 0; k < 10; ++k){
+            SexualCrossoverStrategy cross = new SexualCrossoverStrategy(0.8, 0.4);
+            /*for (int k = 0; k < 10; ++k){
                 for (int i = 0; i < num; ++i){
                     cross.crossoverPair(i1[i], i2[i]);
                 }
-            }
+            }*/
             
             // print after
             U.m("After crossover:");
@@ -245,31 +246,12 @@ public class Simulator extends Thread {
                 i2[i].print();
             }
             
-            U.m("**************** Testing FULL crossover over population of individuals");
-            int numpop = 15;
-            int gen = 25;
-            ArrayList<Individual> pop = new ArrayList();
-            for (int i = 0; i < numpop; ++i){
-                pop.add(new Individual('F'));
-            }
             
-            U.m("Before crossover...");
-            for (Individual i:pop)
-                i.print();
-            
-            U.m("*** Beginning crossover...");
-            for (int i = 0; i < gen; ++i){
-                U.m("Crossing...");
-                cross.crossover(pop, ((double)i/gen*100.00));
-            }
-            
-            U.m("After crossover...");
-            for (Individual i:pop)
-                i.print();
             
         }
         
         private void mutation() {
+            
             Individual in = new Individual('F');
             int mutations = 10;
             
@@ -282,6 +264,7 @@ public class Simulator extends Thread {
             U.m("After grow:");
             in.print();
             
+            
             //trunc
            /*
             * as seen below (performing half of the trunc operations as mutations)
@@ -290,6 +273,7 @@ public class Simulator extends Thread {
             * maybe take depth into account here, otherwise with large trees it may
             * become too destructive, simply chopping potentially good branches.
             */
+            
             U.m("Before trunc:");
             in.print();
             for (int i = 0; i < mutations/2; ++i){
@@ -334,8 +318,40 @@ public class Simulator extends Thread {
             }
             U.m("After gauss:");
             in.print();
-            /**/
             
+            
+            
+        }
+        
+        private void mutationRates(){
+            int t = 0;
+            int generations = 500;
+            ArrayList<Individual> pop = new ArrayList(50);
+            for (int i = 0; i < 50; ++i){
+                pop.add(new Individual('F', 5));
+            }
+            
+            //                              {grow,  trunc, indicator, leaf, inequality, gauss}
+            double[] initialMutationRates = {1.0, 0.0,   0.8,       0.8,  0.8,        0.9};
+            //                              {grow,  trunc, indicator, leaf, inequality, gauss}
+            double[] finalMutationRates =   {0.5, 0.5,   0.2,       0.2,  0.2,        0.4};
+            
+            TreeMutationStrategy mu = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
+            
+            
+            for (int i = 0; i < 6; ++i){
+                U.p(initialMutationRates[i] + "\t");
+            }
+            U.pl("");
+            
+            for (int i = 0; i < generations; ++i){
+                mu.mutate(pop, (double) i/generations);
+            }
+            
+            for (int i = 0; i < 6; ++i){
+                U.p(finalMutationRates[i] + "\t");
+            }
+            U.pl("");
         }
         
         private void clonetest(){
@@ -366,8 +382,6 @@ public class Simulator extends Thread {
         }
         
         private void adhoc(){
-
-            
         }
     }
 }

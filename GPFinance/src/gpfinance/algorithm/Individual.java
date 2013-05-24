@@ -44,7 +44,16 @@ public class Individual {
         return this.fitness;
     }
     
-    public static Comparator<Individual> IndividualComparator = new Comparator<Individual>(){
+    public static Comparator<Individual> MinimizeComparator = new Comparator<Individual>(){
+        @Override
+        public int compare(Individual o1, Individual o2) {
+            Double d1 = o1.fitness;
+            Double d2 = o2.fitness;
+            return d1.compareTo(d2);
+        }
+    };
+    
+    public static Comparator<Individual> MaximizeComparator = new Comparator<Individual>(){
         @Override
         public int compare(Individual o1, Individual o2) {
             Double d1 = o1.fitness;

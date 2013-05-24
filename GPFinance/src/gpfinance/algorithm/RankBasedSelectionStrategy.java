@@ -15,16 +15,11 @@ public class RankBasedSelectionStrategy implements SelectionStrategy {
     public RankBasedSelectionStrategy(){ }
     
     @Override
-    public ArrayList<Individual> select(ArrayList<Individual> pool){
-        return null;
-    }
-    
-    @Override
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize){
         ArrayList<Individual> selected = new ArrayList(selectionSize);
         
         // Rank pool (sort)
-        Collections.sort(pool, Individual.IndividualComparator);
+        Collections.sort(pool, Individual.MaximizeComparator);
         
         // Calculate probabilities
         int poolsize = pool.size();

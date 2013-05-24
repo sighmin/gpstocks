@@ -34,13 +34,14 @@ public class GPFinance {
     }
 
     public static void run(String[] args) throws Exception {
-        final int numsims = 3;
+        final int numsims = 1;
         Simulator[] sims = new Simulator[numsims];
-
-        for (Simulator s : sims) {
-            (s = new Simulator(args)).run();
+        
+        // Run
+        for (int i = 0; i < numsims; ++i) {
+            (sims[i] = new Simulator(args)).run();
         }
-        for (Simulator s : sims) {
+        for (Simulator s:sims) {
             s.join();
         }
     }

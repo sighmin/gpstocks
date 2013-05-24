@@ -16,33 +16,43 @@ public class GP {
     private int populationSize = 50;
     private ArrayList<Individual> population = new ArrayList(populationSize);
     //                              {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] mutationRates = {100.0, 0.0,   0.4,       0.4,  0.4,        0.4};
-    private double crossoverProb = 0.8;
+    private double[] initialMutationRates = {1.0, 0.0,   0.75,       0.75,  0.75,        0.9};
+    //                              {grow,  trunc, indicator, leaf, inequality, gauss}
+    private double[] finalMutationRates =   {0.4, 0.5,   0.2,       0.4,  0.2,        0.4};
+    private double initialCrossoverProb = 0.8;
+    private double finalCrossoverProb = 0.6;
     private char analysisType = 'F';
     
     /* Strategies */
     private InitializationStrategy initializationStrategy = new InitializationStrategy(analysisType);
-    private SelectionStrategy selectionStrategy = new MuLambdaSelectionStrategy();
-    private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(crossoverProb, new RankBasedSelectionStrategy());
-    private MutationStrategy mutationStrategy = new TreeMutationStrategy(mutationRates);
+    private SelectionStrategy populationSelectionStrategy = new MuLambdaSelectionStrategy();
+    private SelectionStrategy reproductionSelectionStrategy = new RankBasedSelectionStrategy();
+    private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
+    private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
 
     // generate constructors once all instance variables defined
     public GP(){ /* Create GP with default parameters */ }
 
-    public GP(int generations, int populationSize, double[] mutationRates, double crossoverProb, char analysisType){
+    public GP(int generations, int populationSize, char analysisType){
+        this.generations = generations;
+        this.populationSize = populationSize;
+        this.analysisType = analysisType;
+    }
+    
+    public GP(int generations, int populationSize, double[] initialMutationRates, double[] finalMutationRates, double initialCrossoverProb, double finalCrossoverProb, char analysisType){
         /* Control Parameters */
         this.generations = generations;
         this.populationSize = populationSize;
         this.population = new ArrayList(populationSize);
-        this.mutationRates = mutationRates;
-        this.crossoverProb = crossoverProb;
+        this.initialMutationRates = initialMutationRates;
+        this.initialCrossoverProb = initialCrossoverProb;
         this.analysisType = analysisType;
         
         /* Strategies */
         initializationStrategy = new InitializationStrategy(analysisType);
-        selectionStrategy = new MuLambdaSelectionStrategy();
-        crossoverStrategy = new SexualCrossoverStrategy(crossoverProb, new RankBasedSelectionStrategy());
-        mutationStrategy = new TreeMutationStrategy(mutationRates);
+        populationSelectionStrategy = new MuLambdaSelectionStrategy();
+        crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
+        mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
     }
     
     public void run(){
@@ -63,17 +73,20 @@ public class GP {
                 previousPopulation.set(i, population.get(i).clone());
             }
             
+            // Selection for reproduction
+            ArrayList<Individual> candidatePopulation = reproductionSelectionStrategy.select(population, population.size()/2);
+            
             // Reproduction producing P'
-            double progress = (t / generations) * 100.0;
-            ArrayList<Individual> crossoverOffspring = crossoverStrategy.crossover(population, progress);
+            double progress = (t / generations);
+            ArrayList<Individual> crossoverOffspring = crossoverStrategy.crossover(candidatePopulation, progress);
             
             // Mutation producing P''
-            ArrayList<Individual> mutationOffspring = mutationStrategy.mutate(population, progress);
+            ArrayList<Individual> mutationOffspring = mutationStrategy.mutate(crossoverOffspring, progress);
             
             // Select P(t+1) from union of offspring: P U P' U P''
-            previousPopulation.addAll(crossoverOffspring);
-            previousPopulation.addAll(mutationOffspring);
-            population = selectionStrategy.select(previousPopulation, population.size());
+            previousPopulation.addAll(crossoverOffspring); //crossed over -- should we include these, even?
+            previousPopulation.addAll(mutationOffspring);  //crossed over and mutated
+            population = populationSelectionStrategy.select(previousPopulation, population.size());
             
             // Advance to next generation
             ++t;

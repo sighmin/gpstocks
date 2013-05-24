@@ -215,10 +215,10 @@ public class DecisionTree {
         
         // Update prev reference
         if (nodes[PREV].left == nodes[CURR]){
-            U.pl("Truncing: " + nodes[PREV] + ", " + nodes[CURR] + ", " + nodes[NEXT]);
+            //U.pl("Truncing: " + nodes[PREV] + ", " + nodes[CURR] + ", " + nodes[NEXT]);
             nodes[PREV].left = replacementNode;
         } else {
-            U.pl("Truncing: " + nodes[PREV] + ", " + nodes[CURR] + ", " + nodes[NEXT]);
+            //U.pl("Truncing: " + nodes[PREV] + ", " + nodes[CURR] + ", " + nodes[NEXT]);
             nodes[PREV].right = replacementNode;
         }
     }

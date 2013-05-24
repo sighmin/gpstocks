@@ -25,6 +25,7 @@ public class U {
      */
     public static void p(Object o){ if (debug) System.out.print(o); }
     public static void pl(Object o){ if (debug) System.out.println(o); }
+    public static void pl(){ if (debug) System.out.println(); }
     public static void m(Object o){ System.out.println(o); }
     
     /**
