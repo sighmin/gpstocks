@@ -60,16 +60,14 @@ public class TreeMutationStrategy implements MutationStrategy {
                     if (r < rates[j]){
                         Individual ind = selectedPop.get(i).clone();
                         switch (j){
-                            case 0: {
+                            case 0:
                                 growMutation(ind);
                                 mutatedOffspring.add(ind);
                                 break;
-                            }
-                            case 1: {
+                            case 1:
                                 truncMutation(ind);
                                 mutatedOffspring.add(ind);
                                 break;
-                            }
                         }
                     }
                 // other mutation rates
@@ -77,26 +75,22 @@ public class TreeMutationStrategy implements MutationStrategy {
                     if (r < (rates[j]/2.0)){ // necessary so mutation isn't too large a change on the tree
                         Individual ind = selectedPop.get(i).clone();
                         switch (j){
-                            case 2: {
+                            case 2:
                                 nonterminalNodeMutation(ind);
                                 mutatedOffspring.add(ind);
                                 break;
-                            }
-                            case 3: {
+                            case 3:
                                 terminalNodeMutation(ind);
                                 mutatedOffspring.add(ind);
                                 break;
-                            }
-                            case 4: {
+                            case 4:
                                 swapMutation(ind);
                                 mutatedOffspring.add(ind);
                                 break;
-                            }
-                            case 5: {
+                            case 5:
                                 gaussianMutation(ind);
                                 mutatedOffspring.add(ind);
                                 break;
-                            }
                         }
                     }
                 }

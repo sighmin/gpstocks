@@ -15,8 +15,8 @@ public class InitializationStrategy {
         this.analysisType = analysisType;
     }
     
-    public void init(ArrayList<Individual> population){
-        for (int i = 0; i < population.size(); ++i){
+    public void init(ArrayList<Individual> population, int size){
+        for (int i = 0; i < size; ++i){
             population.add(new Individual(analysisType));
         }
     }

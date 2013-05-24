@@ -6,6 +6,7 @@ import gpfinance.datatypes.*;
 import gpfinance.tree.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * @date 2013-06-01
@@ -20,10 +21,16 @@ public class Simulator extends Thread {
     @Override
     public void run() {
         // Parse
-        // TODO parse this.args and create appropriate GP() and run it
+        String[] pair;
+        HashMap<String, String> options = new HashMap();
+        for (int i = 0; i < args.length; ++i){
+            pair = args[i].split("=");
+            if (pair.length == 2)
+                options.put(pair[0], pair[1]);
+        }
         
         // Dispatch
-        GP algorithm = new GP();
+        GP algorithm = new GP(options);
         algorithm.run();
     }
     

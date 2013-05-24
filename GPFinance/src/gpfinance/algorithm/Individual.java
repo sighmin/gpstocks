@@ -37,7 +37,7 @@ public class Individual {
     }
     
     public void measure(int t){
-        this.fitness = (double) t;
+        this.fitness = (double) U.rint(t + 10);
     }
     
     public double getFitness(){

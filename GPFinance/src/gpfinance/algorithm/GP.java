@@ -1,19 +1,22 @@
 
 package gpfinance.algorithm;
 
+import gpfinance.U;
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import gpfinance.algorithm.interfaces.MutationStrategy;
 import gpfinance.algorithm.interfaces.CrossoverStrategy;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @date   2013-06-01
  * @author Simon van Dyk, Stuart Reid
  */
 public class GP {
+    private static final int numMutations = 6;
     /* Control Parameters */
-    private int generations = 5000;
-    private int populationSize = 50;
+    private int generations = 500;
+    private int populationSize = 25;
     private ArrayList<Individual> population = new ArrayList(populationSize);
     //                              {grow,  trunc, indicator, leaf, inequality, gauss}
     private double[] initialMutationRates = {1.0, 0.0,   0.75,       0.75,  0.75,        0.9};
@@ -32,11 +35,77 @@ public class GP {
 
     // generate constructors once all instance variables defined
     public GP(){ /* Create GP with default parameters */ }
+    
+    public GP(HashMap options){
+        // Set class values if they exist in the hash
+        if (options.containsKey("type"))
+            this.analysisType = (options.get("type") == "fundamental") ? 'F' : 'T';
+        if (options.containsKey("generations"))
+            this.generations = Integer.parseInt((String)options.get("generations"));
+        if (options.containsKey("population"))
+            this.populationSize = Integer.parseInt((String)options.get("population"));
+        if (options.containsKey("crossoverRate")){
+            String[] rates = ((String)options.get("crossoverRate")).split(":");
+            this.initialCrossoverProb = Double.parseDouble(rates[0]);
+            this.finalCrossoverProb = Double.parseDouble(rates[1]);
+        }
+        if (options.containsKey("mutationRateStart")){
+            String[] rates = ((String)options.get("mutationRateStart")).split(":");
+            this.initialMutationRates = new double[numMutations];
+            for (int i = 0; i < rates.length; ++i){
+                initialMutationRates[i] = Double.parseDouble(rates[i]);
+            }
+        }
+        if (options.containsKey("mutationRateEnd")){
+            String[] rates = ((String)options.get("mutationRateEnd")).split(":");
+            this.finalMutationRates = new double[numMutations];
+            for (int i = 0; i < rates.length; ++i){
+                finalMutationRates[i] = Double.parseDouble(rates[i]);
+            }
+        }
+        // Set class strategies if they exist in the hash
+        if (options.containsKey("populationSelection")){
+            String tmp = ((String)options.get("populationSelection"));
+            switch (tmp) {
+                case "mulambda":
+                    this.populationSelectionStrategy = new MuLambdaSelectionStrategy();
+                    break;
+                case "rankbased":
+                    this.populationSelectionStrategy = new RankBasedSelectionStrategy();
+                    break;
+                default:
+                    this.populationSelectionStrategy = new RandomSelectionStrategy();
+                    break;
+            }
+        }
+        if (options.containsKey("reproductionSelection")){
+            String tmp = ((String)options.get("reproductionSelection"));
+            switch (tmp) {
+                case "rankbased":
+                    this.populationSelectionStrategy = new MuLambdaSelectionStrategy();
+                    break;
+                case "mulambda":
+                    this.populationSelectionStrategy = new RankBasedSelectionStrategy();
+                    break;
+                default:
+                    this.populationSelectionStrategy = new RandomSelectionStrategy();
+                    break;
+            }
+        }
+        
+        // Create the rest of the variables and strategies
+        population = new ArrayList(populationSize);
+        initializationStrategy = new InitializationStrategy(analysisType);
+        crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
+        mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
+    }
 
     public GP(int generations, int populationSize, char analysisType){
         this.generations = generations;
         this.populationSize = populationSize;
         this.analysisType = analysisType;
+        
+        population = new ArrayList(populationSize);
     }
     
     public GP(int generations, int populationSize, double[] initialMutationRates, double[] finalMutationRates, double initialCrossoverProb, double finalCrossoverProb, char analysisType){
@@ -57,7 +126,7 @@ public class GP {
     
     public void run(){
         // Initialize population
-        initializationStrategy.init(population);
+        initializationStrategy.init(population, populationSize);
         
         // For each generation
         int t = 0;
@@ -90,6 +159,7 @@ public class GP {
             
             // Advance to next generation
             ++t;
+            U.m(t);
         } while (t < generations);
     }
     
