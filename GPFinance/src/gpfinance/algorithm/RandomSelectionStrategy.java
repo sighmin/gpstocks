@@ -12,12 +12,7 @@ import java.util.Random;
 public class RandomSelectionStrategy implements SelectionStrategy {
     
     public RandomSelectionStrategy(){ }
-    
-    @Override
-    public ArrayList<Individual> select(ArrayList<Individual> pool){
-        return null;
-    }
-    
+
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize){
         ArrayList<Individual> selected = new ArrayList(selectionSize);

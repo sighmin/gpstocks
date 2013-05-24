@@ -1,8 +1,12 @@
 package gpfinance;
 
 import gpfinance.algorithm.*;
+import gpfinance.algorithm.interfaces.SelectionStrategy;
 import gpfinance.datatypes.*;
 import gpfinance.tree.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * @date 2013-06-01
@@ -17,10 +21,16 @@ public class Simulator extends Thread {
     @Override
     public void run() {
         // Parse
-        // TODO parse this.args and create appropriate GP() and run it
+        String[] pair;
+        HashMap<String, String> options = new HashMap();
+        for (int i = 0; i < args.length; ++i){
+            pair = args[i].split("=");
+            if (pair.length == 2)
+                options.put(pair[0], pair[1]);
+        }
         
         // Dispatch
-        GP algorithm = new GP();
+        GP algorithm = new GP(options);
         algorithm.run();
     }
     
@@ -69,6 +79,7 @@ public class Simulator extends Thread {
             }
             if (c.contains("mutation")){
                 mutation();
+                mutationRates();
             }
             if (c.contains("crossover")){
                 crossover();
@@ -152,12 +163,102 @@ public class Simulator extends Thread {
         }
 
         private void selection() {
+            
+            U.m("**************** Testing random selection strategy...");
+            SelectionStrategy rand = new RandomSelectionStrategy();
+            int numpop = 10;
+            int selectionSize = 5;
+            ArrayList<Individual> pop = new ArrayList();
+            for (int i = 0; i < numpop; ++i){
+                pop.add(new Individual('F', 0));
+                pop.get(i).measure(U.rint(numpop));
+            }
+            
+            U.m("Testing  sort...");
+            U.m("BEFORE");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            Collections.sort(pop, Individual.MaximizeComparator);
+            U.m("AFTER");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            
+            U.m("RANDOM - POOL:");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            ArrayList<Individual> selected = rand.select(pop, selectionSize);
+            U.m("RANDOM - SELECTED:");
+            for (int i = 0; i < selected.size(); ++i){
+                selected.get(i).print();
+            }
+            
+            U.m("**************** Testing MuLambda selection strategy...");
+            rand = new MuLambdaSelectionStrategy();
+            
+            U.m("MULAMBDA - POOL:");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            selected = rand.select(pop, selectionSize);
+            U.m("MULAMBDA - SELECTED:");
+            for (int i = 0; i < selected.size(); ++i){
+                selected.get(i).print();
+            }
+            
+            U.m("**************** Testing Rank based selection strategy...");
+            rand = new RankBasedSelectionStrategy();
+            
+            U.m("RANK - POOL:");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            selected = rand.select(pop, selectionSize);
+            U.m("RANK - SELECTED:");
+            for (int i = 0; i < selected.size(); ++i){
+                selected.get(i).print();
+            }
         }
 
         private void crossover() {
+            // init individuals
+            int num = 1;
+            Individual[] i1 = new Individual[num];
+            Individual[] i2 = new Individual[num];
+            for (int i = 0; i < num; ++i){
+                i1[i] = new Individual('F');
+                i2[i] = new Individual('F');
+            }
+            // print before
+            U.m("Before crossover:");
+            for (int i = 0; i < num; ++i){
+                i1[i].print();
+                i2[i].print();
+            }
+            
+            // crossover
+            SexualCrossoverStrategy cross = new SexualCrossoverStrategy(0.8, 0.4);
+            /*for (int k = 0; k < 10; ++k){
+                for (int i = 0; i < num; ++i){
+                    cross.crossoverPair(i1[i], i2[i]);
+                }
+            }*/
+            
+            // print after
+            U.m("After crossover:");
+            for (int i = 0; i < num; ++i){
+                i1[i].print();
+                i2[i].print();
+            }
+            
+            
+            
         }
         
         private void mutation() {
+            
             Individual in = new Individual('F');
             int mutations = 10;
             
@@ -179,7 +280,6 @@ public class Simulator extends Thread {
             * maybe take depth into account here, otherwise with large trees it may
             * become too destructive, simply chopping potentially good branches.
             */
-            
             
             U.m("Before trunc:");
             in.print();
@@ -225,8 +325,40 @@ public class Simulator extends Thread {
             }
             U.m("After gauss:");
             in.print();
-            /**/
             
+            
+            
+        }
+        
+        private void mutationRates(){
+            int t = 0;
+            int generations = 500;
+            ArrayList<Individual> pop = new ArrayList(50);
+            for (int i = 0; i < 50; ++i){
+                pop.add(new Individual('F', 5));
+            }
+            
+            //                              {grow,  trunc, indicator, leaf, inequality, gauss}
+            double[] initialMutationRates = {1.0, 0.0,   0.8,       0.8,  0.8,        0.9};
+            //                              {grow,  trunc, indicator, leaf, inequality, gauss}
+            double[] finalMutationRates =   {0.5, 0.5,   0.2,       0.2,  0.2,        0.4};
+            
+            TreeMutationStrategy mu = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
+            
+            
+            for (int i = 0; i < 6; ++i){
+                U.p(initialMutationRates[i] + "\t");
+            }
+            U.pl("");
+            
+            for (int i = 0; i < generations; ++i){
+                mu.mutate(pop, (double) i/generations);
+            }
+            
+            for (int i = 0; i < 6; ++i){
+                U.p(finalMutationRates[i] + "\t");
+            }
+            U.pl("");
         }
         
         private void clonetest(){
@@ -257,8 +389,6 @@ public class Simulator extends Thread {
         }
         
         private void adhoc(){
-
-            
         }
     }
 }

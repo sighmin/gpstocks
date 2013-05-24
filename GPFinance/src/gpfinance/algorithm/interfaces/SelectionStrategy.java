@@ -10,6 +10,5 @@ import java.util.ArrayList;
  */
 public interface SelectionStrategy {
     public SelectionStrategy clone();
-    public ArrayList<Individual> select(ArrayList<Individual> pool);
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize);
 }

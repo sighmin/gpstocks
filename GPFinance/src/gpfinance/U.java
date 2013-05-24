@@ -25,6 +25,7 @@ public class U {
      */
     public static void p(Object o){ if (debug) System.out.print(o); }
     public static void pl(Object o){ if (debug) System.out.println(o); }
+    public static void pl(){ if (debug) System.out.println(); }
     public static void m(Object o){ System.out.println(o); }
     
     /**
@@ -33,6 +34,8 @@ public class U {
      *   randomVal() - return random double in range [MIN, MAX)
      */
     public static boolean chance(){ return Math.random() < 0.5; }
+    public static double r() { return Math.random(); }
+    public static int rint(int size) { return new Random().nextInt(size); }
     public static double randomVal() { return (MIN + (Math.random() * ((MAX - MIN) + 1.0)) * 0.85); }
     public static int randomTreeIndex(int size) { return (new Random()).nextInt(size-1) +1; }
     
@@ -55,4 +58,5 @@ public class U {
         
         return (MEAN + DEVIATION[0] * v / u);
     }
+
 }

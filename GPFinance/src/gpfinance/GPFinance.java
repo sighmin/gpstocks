@@ -34,13 +34,14 @@ public class GPFinance {
     }
 
     public static void run(String[] args) throws Exception {
-        final int numsims = 3;
+        final int numsims = 1;
         Simulator[] sims = new Simulator[numsims];
-
-        for (Simulator s : sims) {
-            (s = new Simulator(args)).run();
+        
+        // Run
+        for (int i = 0; i < numsims; ++i) {
+            (sims[i] = new Simulator(args)).run();
         }
-        for (Simulator s : sims) {
+        for (Simulator s:sims) {
             s.join();
         }
     }
@@ -57,7 +58,7 @@ public class GPFinance {
                 + "fundamental or technical indicators.\n\n"
                 + "USAGE\n"
                 + "    java -jar GPFinance.jar help\n"
-                + "    java -jar GPFinance.jar run [fundamental|technical] [OPTIONS]\n"
+                + "    java -jar GPFinance.jar run [OPTIONS]\n"
                 + "    java -jar GPFinance.jar test [all|random|tree|datatypes]\n");
     }
 
@@ -77,10 +78,23 @@ public class GPFinance {
                 + "fundamental or technical indicators, given a quartly evaluation period."
                 + "\n\n"
                 + "  OPTIONS\n"
-                + "      fundamental\n"
+                + "      type=[fundamental|technical]\n"
                 + "          Develops decision tree using fundametal indicators.\n"
-                + "      technical\n"
                 + "          Develops decision tree using technical indicators.\n"
+                + "      generations=<number>\n"
+                + "          The number of iterations before the genetic algorithm halts.\n"
+                + "      population=<number>\n"
+                + "          The number of individuals in the population.\n"
+                + "      crossoverRate=<number>:<number>\n"
+                + "          The initial and final crossover rate, changes linearly.\n"
+                + "      mutationRateStart=<number>:<number>:<number>:<number>:<number>:<number>\n"
+                + "          Set of initial mutation rates for types grow, trunc, indicator, decision, inequality and gauss.\n"
+                + "      mutationRateEnd=<number>:<number>:<number>:<number>:<number>:<number>\n"
+                + "          Set of final mutation rates of the same type as above.\n"
+                + "      populationSelection=[mulambda|rankbased|random]\n"
+                + "          Sets the next population selection strategy.\n"
+                + "      reproductionSelection=[rankbased|mulambda|random]\n"
+                + "          Sets the reproduction selection strategy.\n"
                 + "  TEST_OPTIONS\n"
                 + "      all\n"
                 + "          Runs all the tests. This option is particularly verbose.\n"

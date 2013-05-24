@@ -1,6 +1,8 @@
 
 package gpfinance.tree;
 
+import gpfinance.U;
+
 /**
  * @date   2013-06-01
  * @author Simon van Dyk, Stuart Reid
@@ -24,7 +26,7 @@ public class Node {
     }
 
     private void print(String prefix, boolean isTail) {
-        System.out.println(prefix + (isTail ? "└── " : "├── ") + this.toString());
+        U.m(prefix + (isTail ? "└── " : "├── ") + this.toString());
         if (left != null)
             left.print(prefix + (isTail ? "    " : "│   "), left == null);
         if (right != null)
