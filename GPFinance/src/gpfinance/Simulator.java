@@ -1,8 +1,11 @@
 package gpfinance;
 
 import gpfinance.algorithm.*;
+import gpfinance.algorithm.interfaces.SelectionStrategy;
 import gpfinance.datatypes.*;
 import gpfinance.tree.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @date 2013-06-01
@@ -152,6 +155,63 @@ public class Simulator extends Thread {
         }
 
         private void selection() {
+            
+            U.m("**************** Testing random selection strategy...");
+            SelectionStrategy rand = new RandomSelectionStrategy();
+            int numpop = 10;
+            int selectionSize = 5;
+            ArrayList<Individual> pop = new ArrayList();
+            for (int i = 0; i < numpop; ++i){
+                pop.add(new Individual('F', 0));
+                pop.get(i).measure(U.rint(numpop));
+            }
+            
+            U.m("Testing  sort...");
+            U.m("BEFORE");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            Collections.sort(pop, Individual.IndividualComparator);
+            U.m("AFTER");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            
+            U.m("RANDOM - POOL:");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            ArrayList<Individual> selected = rand.select(pop, selectionSize);
+            U.m("RANDOM - SELECTED:");
+            for (int i = 0; i < selected.size(); ++i){
+                selected.get(i).print();
+            }
+            
+            U.m("**************** Testing MuLambda selection strategy...");
+            rand = new MuLambdaSelectionStrategy();
+            
+            U.m("MULAMBDA - POOL:");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            selected = rand.select(pop, selectionSize);
+            U.m("MULAMBDA - SELECTED:");
+            for (int i = 0; i < selected.size(); ++i){
+                selected.get(i).print();
+            }
+            
+            U.m("**************** Testing Rank based selection strategy...");
+            rand = new RankBasedSelectionStrategy();
+            
+            U.m("RANK - POOL:");
+            for (int i = 0; i < numpop; ++i){
+                pop.get(i).print();
+            }
+            selected = rand.select(pop, selectionSize);
+            U.m("RANK - SELECTED:");
+            for (int i = 0; i < selected.size(); ++i){
+                selected.get(i).print();
+            }
         }
 
         private void crossover() {
@@ -184,6 +244,28 @@ public class Simulator extends Thread {
                 i1[i].print();
                 i2[i].print();
             }
+            
+            U.m("**************** Testing FULL crossover over population of individuals");
+            int numpop = 15;
+            int gen = 25;
+            ArrayList<Individual> pop = new ArrayList();
+            for (int i = 0; i < numpop; ++i){
+                pop.add(new Individual('F'));
+            }
+            
+            U.m("Before crossover...");
+            for (Individual i:pop)
+                i.print();
+            
+            U.m("*** Beginning crossover...");
+            for (int i = 0; i < gen; ++i){
+                U.m("Crossing...");
+                cross.crossover(pop, ((double)i/gen*100.00));
+            }
+            
+            U.m("After crossover...");
+            for (Individual i:pop)
+                i.print();
             
         }
         

@@ -35,14 +35,20 @@ public class SexualCrossoverStrategy implements CrossoverStrategy {
         Collections.sort(population, Individual.IndividualComparator);
         int size = population.size();
         double sum = 0;
+        double normalsum = 0;
         Random random = new Random();
         double[] probabilities = new double[size];
         for (int i = 0; i < size; ++i){
             sum += (double) (i+1);
         }
         for (int i = 0; i < size; ++i){
-            probabilities[i] = (double) (i+1) / (double) size;
+            normalsum += (probabilities[i] = (double) (i+1) / (double) size);
         }
+        // normalize
+        for (int i = 0; i < size; ++i){
+            probabilities[i] = probabilities[i]/normalsum;
+        }
+        
         
         // Create list of pairs of parents
         ArrayList<Individual[]> pairs = new ArrayList();

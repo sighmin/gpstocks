@@ -33,6 +33,8 @@ public class U {
      *   randomVal() - return random double in range [MIN, MAX)
      */
     public static boolean chance(){ return Math.random() < 0.5; }
+    public static double r() { return Math.random(); }
+    public static int rint(int size) { return new Random().nextInt(size); }
     public static double randomVal() { return (MIN + (Math.random() * ((MAX - MIN) + 1.0)) * 0.85); }
     public static int randomTreeIndex(int size) { return (new Random()).nextInt(size-1) +1; }
     
@@ -55,4 +57,5 @@ public class U {
         
         return (MEAN + DEVIATION[0] * v / u);
     }
+
 }

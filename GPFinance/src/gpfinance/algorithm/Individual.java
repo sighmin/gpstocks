@@ -1,6 +1,7 @@
 
 package gpfinance.algorithm;
 
+import gpfinance.U;
 import gpfinance.tree.DecisionTree;
 import java.util.Comparator;
 
@@ -18,6 +19,10 @@ public class Individual {
         this.tree = new DecisionTree(type);
     }
 
+    public Individual(char type, int treesize){
+        this.tree = new DecisionTree(type, treesize);
+    }
+
     public Individual(DecisionTree tree) {
         this.tree = tree;
     }
@@ -32,7 +37,7 @@ public class Individual {
     }
     
     public void measure(int t){
-        
+        this.fitness = (double) t;
     }
     
     public double getFitness(){
@@ -44,7 +49,7 @@ public class Individual {
         public int compare(Individual o1, Individual o2) {
             Double d1 = o1.fitness;
             Double d2 = o2.fitness;
-            return d1.compareTo(d2);
+            return d2.compareTo(d1);
         }
     };
     
@@ -54,6 +59,7 @@ public class Individual {
     }
 
     public void print(){
+        U.m("f(): " + fitness);
         tree.print();
     }
 
