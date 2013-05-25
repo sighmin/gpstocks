@@ -27,11 +27,14 @@ public class GoogleExtractor extends Extractor {
     private final String[] technicalIndicators;
     private ArrayList<String> outputLines;
     private ArrayList<Historical> historicalData;
+    private ArrayList<Indicator> indicators;
 
 //    /dates, TechnicalIndicators, fullFileName
     public GoogleExtractor(String[] dates, String[] tI, String fileName) {
         outputLines = new ArrayList();
         historicalData = new ArrayList();
+        indicators = new ArrayList();
+
         technicalIndicators = tI;
         fullFileName = fileName;
         dateStarting = dates[0];
@@ -100,36 +103,84 @@ public class GoogleExtractor extends Extractor {
         }
     }
 
-    public void calculateAccDist() {
-        for (int i = 0; i < historicalData.size(); i++) {
+    public void calculateTechnicalIndicators() {
+        int size = historicalData.size();
+        for (int i = 0; i < size; i++) {
+            String date = historicalData.get(i).date;
+            String dateEnding = historicalData.get(size - 1).date;
             double close = historicalData.get(i).close;
+            double closeEnding = historicalData.get(size - 1).close;
             double high = historicalData.get(i).high;
             double low = historicalData.get(i).low;
             int volume = historicalData.get(i).volume;
+            DecimalFormat df = new DecimalFormat("#.00000");
 
+            //Accumulation Distribution Line calculation
             double accDist = ((close - low) - (high - close)) / (high - low) * volume;
             historicalData.get(i).setAccDist(accDist);
+            if (date.equals("30-Dec-11")) {
+                Indicator accumulativeDist = new Indicator("Accumulator Distribution", 1);
+                accumulativeDist.values[0] = "" + df.format(historicalData.get(i).accDist);
+                indicators.add(accumulativeDist);
+            }
+
+            //90 Day & price change
+            if (date.equals("24-Aug-11")) {
+                double percentChange = priceChange(close, closeEnding);
+                Indicator change = new Indicator("90 Day price movement", 1);
+                change.values[0] = "" + df.format(percentChange);
+                indicators.add(change);
+            }
+
+            //60 Day % price change
+            if (date.equals("6-Oct-11")) {
+                double percentChange = priceChange(close, closeEnding);
+                Indicator change = new Indicator("60 Day price movement", 1);
+                change.values[0] = "" + df.format(percentChange);
+                indicators.add(change);
+            }
+
+            //30 Day % price change
+            if (date.equals("17-Nov-11")) {
+                double percentChange = priceChange(close, closeEnding);
+                Indicator change = new Indicator("30 Day price movement", 1);
+                change.values[0] = "" + df.format(percentChange);
+                indicators.add(change);
+            }
+
+            //14 Day % price change
+            if (date.equals("12-Dec-11")) {
+                double percentChange = priceChange(close, closeEnding);
+                Indicator change = new Indicator("14 Day price movement", 1);
+                change.values[0] = "" + df.format(percentChange);
+                indicators.add(change);
+            }
+
+            //7 Day % price change
+            if (date.equals("21-Dec-11")) {
+                double percentChange = priceChange(close, closeEnding);
+                Indicator change = new Indicator("7 Day price movement", 1);
+                change.values[0] = "" + df.format(percentChange);
+                indicators.add(change);
+            }
         }
+    }
+
+    private double priceChange(double close, double open) {
+        double difference = close - open;
+        double movement = (difference / close) * close;
+        return movement;
     }
 
     public void writeTechnicals() {
         try {
             String outputFile = fullFileName.replaceAll(".csv", "") + " Indicators.csv";
             FileWriter fw = new FileWriter(outputFile);
-            for (int i = 0; i < historicalData.size(); i++) {
-                String date = historicalData.get(i).date;
-                double open = historicalData.get(i).open;
-                double close = historicalData.get(i).close;
-                double high = historicalData.get(i).high;
-                double low = historicalData.get(i).low;
-                int volume = historicalData.get(i).volume;
-                double accDist = historicalData.get(i).accDist;
-
-                DecimalFormat df = new DecimalFormat("#.00000");
-
-                String output = date + "," + open + "," + close + "," + high + "," + low + "," + volume + "," + df.format(accDist);
-                System.out.println(output);
-                fw.write(output);
+            for (Indicator indicator : indicators) {
+                fw.write(indicator.indicatorName);
+                for (int j = 0; j < indicator.values.length; j++) {
+                    fw.write("," + indicator.values[j]);
+                }
                 fw.write("\n");
                 fw.flush();
             }
@@ -138,44 +189,31 @@ public class GoogleExtractor extends Extractor {
         }
     }
 
-    public void extractFitnessFile(String outputFileName) {
-        try {
-            FileWriter fw = new FileWriter("Fitness/" + outputFileName);
+    /*public void writeTechnicals() {
+     try {
+     String outputFile = fullFileName.replaceAll(".csv", "") + " Indicators.csv";
+     FileWriter fw = new FileWriter(outputFile);
+     for (int i = 0; i < historicalData.size(); i++) {
+     String date = historicalData.get(i).date;
+     double open = historicalData.get(i).open;
+     double close = historicalData.get(i).close;
+     double high = historicalData.get(i).high;
+     double low = historicalData.get(i).low;
+     int volume = historicalData.get(i).volume;
+     double accDist = historicalData.get(i).accDist;
 
-            String path = "Fitness";
-            String files;
-            File folder = new File(path);
-            File[] listOfFiles = folder.listFiles();
+     DecimalFormat df = new DecimalFormat("#.00000");
 
-            for (int i = 0; i < listOfFiles.length; i++) {
-
-                if (listOfFiles[i].isFile()) {
-                    files = listOfFiles[i].getName();
-
-                    BufferedReader br = new BufferedReader(new FileReader("Fitness/" + files));
-                    String line = br.readLine();
-
-                    ArrayList<String> fitnessDates = new ArrayList();
-                    //fitnessDates.add("3-Jan-11");
-                    //fitnessDates.add("1-Apr-11");
-                    //fitnessDates.add("1-Jul-11");
-                    //fitnessDates.add("3-Oct-11");
-                    fitnessDates.add("30-Dec-11");
-
-                    while (line != null) {
-                        String[] lineSplit = line.split(",");
-                        if (fitnessDates.contains(lineSplit[0])) {
-                            fw.write(files.replaceAll(".csv", "") + "," + lineSplit[4] + "\n");
-                            fw.flush();
-                        }
-                        line = br.readLine();
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+     String output = date + "," + open + "," + close + "," + high + "," + low + "," + volume + "," + df.format(accDist);
+     System.out.println(output);
+     fw.write(output);
+     fw.write("\n");
+     fw.flush();
+     }
+     } catch (Exception e) {
+     e.printStackTrace();
+     }
+     }*/
 }
 
 class Historical {
@@ -198,3 +236,43 @@ class Historical {
         this.accDist = accDist;
     }
 }
+
+
+/*public void extractFitnessFile(String outputFileName) {
+ try {
+ FileWriter fw = new FileWriter("Fitness/" + outputFileName);
+
+ String path = "Fitness";
+ String files;
+ File folder = new File(path);
+ File[] listOfFiles = folder.listFiles();
+
+ for (int i = 0; i < listOfFiles.length; i++) {
+
+ if (listOfFiles[i].isFile()) {
+ files = listOfFiles[i].getName();
+
+ BufferedReader br = new BufferedReader(new FileReader("Fitness/" + files));
+ String line = br.readLine();
+
+ ArrayList<String> fitnessDates = new ArrayList();
+ //fitnessDates.add("3-Jan-11");
+ //fitnessDates.add("1-Apr-11");
+ //fitnessDates.add("1-Jul-11");
+ //fitnessDates.add("3-Oct-11");
+ fitnessDates.add("30-Dec-11");
+
+ while (line != null) {
+ String[] lineSplit = line.split(",");
+ if (fitnessDates.contains(lineSplit[0])) {
+ fw.write(files.replaceAll(".csv", "") + "," + lineSplit[4] + "\n");
+ fw.flush();
+ }
+ line = br.readLine();
+ }
+ }
+ }
+ } catch (IOException ex) {
+ ex.printStackTrace();
+ }
+ }*/

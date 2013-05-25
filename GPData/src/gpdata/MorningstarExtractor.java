@@ -39,24 +39,34 @@ public class MorningstarExtractor extends Extractor {
                 switch (yearInt) {
                     case 2012:
                         yearsToExtract.add(11);
+                        break;
                     case 2011:
                         yearsToExtract.add(10);
+                        break;
                     case 2010:
                         yearsToExtract.add(9);
+                        break;
                     case 2009:
                         yearsToExtract.add(8);
+                        break;
                     case 2008:
                         yearsToExtract.add(7);
+                        break;
                     case 2007:
                         yearsToExtract.add(6);
+                        break;
                     case 2006:
                         yearsToExtract.add(5);
+                        break;
                     case 2005:
                         yearsToExtract.add(4);
+                        break;
                     case 2004:
                         yearsToExtract.add(3);
+                        break;
                     case 2003:
                         yearsToExtract.add(2);
+                        break;
                 }
             } catch (Exception exception) {
                 System.out.println("Error caught: " + exception);
@@ -118,16 +128,5 @@ public class MorningstarExtractor extends Extractor {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-}
-
-class Indicator {
-
-    String indicatorName;
-    String[] values;
-
-    Indicator(String name, int valuesSize) {
-        indicatorName = name;
-        values = new String[valuesSize];
     }
 }

@@ -52,7 +52,7 @@ public class GPData {
                     try {
                         technicalExtractor = new GoogleExtractor(dates, TechnicalIndicators, fullFileName);
                         technicalExtractor.extractBetweenDates();
-                        technicalExtractor.calculateAccDist();
+                        technicalExtractor.calculateTechnicalIndicators();
                         technicalExtractor.writeTechnicals();
                     } catch (Exception ex) {
                         ex.printStackTrace();
