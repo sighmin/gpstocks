@@ -127,7 +127,7 @@ public class GoogleExtractor extends Extractor {
         }
 
         //Percentage closing price movements
-        int[] percentChanges = {7, 14, 30, 60, 90};
+        int[] percentChanges = {1, 7, 14, 30, 60, 90};
         for (int days : percentChanges) {
             double closeStart = historicalData.get(size - days).close;
             double closeEnd = historicalData.get(size - 1).close;
@@ -138,9 +138,23 @@ public class GoogleExtractor extends Extractor {
             indicators.add(percentChangeIndicator);
         }
 
+        //Simple Moving Average
+        int[] SMA = {7, 14, 30, 60, 90, 180};
+        for (int sma : SMA) {
+            double runningTotal = 0.0;
+            for (int i = 0; i < sma; i++) {
+                double close = historicalData.get(size - (1 + i)).close;
+                runningTotal += close;
+            }
+            String name = sma + " Day Simple Moving Average";
+            Indicator smavg = new Indicator(name, 1);
+            smavg.values[0] = "" + df.format(runningTotal / sma);
+            indicators.add(smavg);
+        }
+
         //Rate of Change
         //ROC = [(Close - Close n periods ago) / (Close n periods ago)] * 100
-        int[] periods = {7, 14, 30, 60, 90};
+        int[] periods = {1, 7, 14, 30, 60, 90};
         for (int period : periods) {
             double closeStart = historicalData.get(size - period).close;
             double closeEnd = historicalData.get(size - 1).close;
@@ -149,6 +163,59 @@ public class GoogleExtractor extends Extractor {
             Indicator roc = new Indicator(name, 1);
             roc.values[0] = "" + df.format(rateOfChange);
             indicators.add(roc);
+        }
+
+        //Aroon calculations
+        //Aroon-Up = ((25 - Days Since 25-day High)/25) x 100
+        //Aroon-Down = ((25 - Days Since 25-day Low)/25) x 100
+        double High25Day = Double.MIN_VALUE;
+        double Low25Day = Double.MAX_VALUE;
+        int daysSinceHigh = 0;
+        int daysSinceLow = 0;
+        for (int i = 25; i > 0; i--) {
+            double close = historicalData.get(size - i).close;
+            if (close > High25Day) {
+                High25Day = close;
+                daysSinceHigh = i;
+            }
+            if (close < Low25Day) {
+                Low25Day = close;
+                daysSinceLow = i;
+            }
+        }
+        double AroonUp = ((25 - daysSinceHigh) / 25) * 100;
+        Indicator aroonUp = new Indicator("Aroon up 25", 1);
+        aroonUp.values[0] = "" + df.format(AroonUp);
+        indicators.add(aroonUp);
+
+        double AroonDown = ((25 - daysSinceLow) / 25) * 100;
+        Indicator aroonDown = new Indicator("Aroon down 25", 1);
+        aroonDown.values[0] = "" + df.format(AroonDown);
+        indicators.add(aroonDown);
+
+        //Force index
+        //Force Index(1) = {Close (current period)  -  Close (prior period)} x Volume
+        int[] forcePeriods = {1, 7, 14, 30, 60, 90};
+        double[] forces = new double[6];
+        int counter = 0;
+        for (int force : forcePeriods) {
+            double closeCurrent = historicalData.get(size - 1).close;
+            double closePrior = historicalData.get(size - (1 + force)).close;
+            double volume = historicalData.get(size - 1).volume;
+            forces[counter] = (closeCurrent - closePrior) * volume;
+            counter++;
+        }
+        double[] forceEMAs = new double[6];
+        forceEMAs[5] = (forces[0] + (forces[1] / 2) + (forces[2] / 4) + (forces[3] / 8) + (forces[4] / 16) + (forces[5] / 32)) / 1000;
+        forceEMAs[4] = (forces[0] + (forces[1] / 2) + (forces[2] / 4) + (forces[3] / 8) + (forces[4] / 16)) / 1000;
+        forceEMAs[3] = (forces[0] + (forces[1] / 2) + (forces[2] / 4) + (forces[3] / 8)) / 1000;
+        forceEMAs[2] = (forces[0] + (forces[1] / 2) + (forces[2] / 4)) / 1000;
+        forceEMAs[1] = (forces[0] + (forces[1] / 2)) / 1000;
+        forceEMAs[0] = (forces[0]) / 1000;
+        for (int i = 0; i < 6; i++) {
+            Indicator forceIndicator = new Indicator(forcePeriods[i] + " day force index", 1);
+            forceIndicator.values[0] = "" + df.format(forceEMAs[i]);
+            indicators.add(forceIndicator);
         }
     }
 
