@@ -105,6 +105,8 @@ public class GoogleExtractor extends Extractor {
 
     public void calculateTechnicalIndicators() {
         int size = historicalData.size();
+        DecimalFormat df = new DecimalFormat("#0.000");
+
         for (int i = 0; i < size; i++) {
             String date = historicalData.get(i).date;
             String dateEnding = historicalData.get(size - 1).date;
@@ -113,7 +115,6 @@ public class GoogleExtractor extends Extractor {
             double high = historicalData.get(i).high;
             double low = historicalData.get(i).low;
             int volume = historicalData.get(i).volume;
-            DecimalFormat df = new DecimalFormat("#.00000");
 
             //Accumulation Distribution Line calculation
             double accDist = ((close - low) - (high - close)) / (high - low) * volume;
@@ -123,46 +124,31 @@ public class GoogleExtractor extends Extractor {
                 accumulativeDist.values[0] = "" + df.format(historicalData.get(i).accDist);
                 indicators.add(accumulativeDist);
             }
+        }
 
-            //90 Day & price change
-            if (date.equals("24-Aug-11")) {
-                double percentChange = priceChange(close, closeEnding);
-                Indicator change = new Indicator("90 Day price movement", 1);
-                change.values[0] = "" + df.format(percentChange);
-                indicators.add(change);
-            }
+        //Percentage closing price movements
+        int[] percentChanges = {7, 14, 30, 60, 90};
+        for (int days : percentChanges) {
+            double closeStart = historicalData.get(size - days).close;
+            double closeEnd = historicalData.get(size - 1).close;
+            double percentChange = priceChange(closeStart, closeEnd);
+            String name = days + " Day % price movement";
+            Indicator percentChangeIndicator = new Indicator(name, 1);
+            percentChangeIndicator.values[0] = "" + df.format(percentChange);
+            indicators.add(percentChangeIndicator);
+        }
 
-            //60 Day % price change
-            if (date.equals("6-Oct-11")) {
-                double percentChange = priceChange(close, closeEnding);
-                Indicator change = new Indicator("60 Day price movement", 1);
-                change.values[0] = "" + df.format(percentChange);
-                indicators.add(change);
-            }
-
-            //30 Day % price change
-            if (date.equals("17-Nov-11")) {
-                double percentChange = priceChange(close, closeEnding);
-                Indicator change = new Indicator("30 Day price movement", 1);
-                change.values[0] = "" + df.format(percentChange);
-                indicators.add(change);
-            }
-
-            //14 Day % price change
-            if (date.equals("12-Dec-11")) {
-                double percentChange = priceChange(close, closeEnding);
-                Indicator change = new Indicator("14 Day price movement", 1);
-                change.values[0] = "" + df.format(percentChange);
-                indicators.add(change);
-            }
-
-            //7 Day % price change
-            if (date.equals("21-Dec-11")) {
-                double percentChange = priceChange(close, closeEnding);
-                Indicator change = new Indicator("7 Day price movement", 1);
-                change.values[0] = "" + df.format(percentChange);
-                indicators.add(change);
-            }
+        //Rate of Change
+        //ROC = [(Close - Close n periods ago) / (Close n periods ago)] * 100
+        int[] periods = {7, 14, 30, 60, 90};
+        for (int period : periods) {
+            double closeStart = historicalData.get(size - period).close;
+            double closeEnd = historicalData.get(size - 1).close;
+            double rateOfChange = ((closeEnd - closeStart) / closeEnd) * 100;
+            String name = period + " Day % Rate of change";
+            Indicator roc = new Indicator(name, 1);
+            roc.values[0] = "" + df.format(rateOfChange);
+            indicators.add(roc);
         }
     }
 

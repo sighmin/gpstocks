@@ -65,12 +65,12 @@ public class GPData {
         for (File file : listOfFiles) {
             if (file.getName().contains("temp")) {
                 file.delete();
-            } 
+            }
         }
     }
 
     public static void main(String[] args) {
-        String[] yearsToExtract = {"2010", "2011"};
+        String[] yearsToExtract = {"2009", "2010"};
         String[] datesToExtract = {"30-Dec-11", "4-Jan-10"};
         String[] fundamentals = {"Gross Margin %", "Operating Margin %",
             "Earnings Per Share USD", "Book Value Per Share USD", "SG&A",

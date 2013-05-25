@@ -7,6 +7,7 @@
 package gpdata;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -92,19 +93,35 @@ public class MorningstarExtractor extends Extractor {
         }
     }
 
+    private double change(double close, double open) {
+        double difference = close - open;
+        double movement = (difference / close) * close;
+        return movement;
+    }
+
     public void writeDataToFile() {
         try {
+            DecimalFormat df = new DecimalFormat("#0.000");
             String outputFileName = morningstarFileName.replaceAll(".csv", "") + " Indicators.csv";
             BufferedReader br;
             FileWriter fw = this.getFileWriter(outputFileName);
             for (int i = 0; i < rawData.size(); i++) {
                 if (indicatorsToExtract.contains(rawData.get(i).indicatorName)) {
-                    fw.write(rawData.get(i).indicatorName);
-                    for (int j = 0; j < rawData.get(i).values.length; j++) {
-                        fw.write("," + rawData.get(i).values[j]);
+
+                    String indicatorValue2009 = rawData.get(i).values[0];
+                    String indicatorValue2010 = rawData.get(i).values[1];
+                    if (indicatorValue2009.equals("")) {
+                        indicatorValue2009 = indicatorValue2010;
                     }
 
-                    fw.write("\n");
+                    fw.write(rawData.get(i).indicatorName + " 2009," + indicatorValue2009 + "\n");
+                    fw.write(rawData.get(i).indicatorName + " 2010," + indicatorValue2010 + "\n");
+
+                    double indicatorValue2009D = Double.parseDouble(indicatorValue2009);
+                    double indicatorValue2010D = Double.parseDouble(indicatorValue2010);
+                    double change = change(indicatorValue2009D, indicatorValue2010D);
+                    fw.write(rawData.get(i).indicatorName + " YoY % change," + df.format(change) + "\n");
+
                     fw.flush();
                 }
             }
