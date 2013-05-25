@@ -20,58 +20,54 @@ import java.util.logging.Logger;
  *
  * @author stuart
  */
-public class GoogleExtractor {
+public class GoogleExtractor extends Extractor {
 
-    ArrayList<String> outputLines;
-    ArrayList<Historical> historicalData;
+    private final String fullFileName;
+    private final String dateStarting, dateEnding;
+    private final String[] technicalIndicators;
+    private ArrayList<String> outputLines;
+    private ArrayList<Historical> historicalData;
 
-    GoogleExtractor() {
+//    /dates, TechnicalIndicators, fullFileName
+    public GoogleExtractor(String[] dates, String[] tI, String fileName) {
         outputLines = new ArrayList();
         historicalData = new ArrayList();
+        technicalIndicators = tI;
+        fullFileName = fileName;
+        dateStarting = dates[0];
+        dateEnding = dates[1];
     }
 
-    public void extractDates(String dateStarting, String dateEnding, String fileName) {
-        outputLines = null;
-        outputLines = new ArrayList();
-
+    public void extractBetweenDates() {
         try {
-            FileReader fr = new FileReader("Fitness/" + fileName);
-            BufferedReader br = new BufferedReader(fr);
-
-            //String outputFile = fileName.replaceAll(".csv", "") + "-2010-2011.csv";
-            String outputFile = "Fitness/" + fileName.replaceAll(".csv", "").toUpperCase() + ".csv";
-            FileWriter fw = new FileWriter(outputFile);
-
+            outputLines = null;
+            outputLines = new ArrayList();
+            BufferedReader br = this.getBufferedReader(fullFileName);
+            String outputFile = fullFileName.replaceAll(".csv", "") + " temp.csv";
+            FileWriter fw = this.getFileWriter(outputFile);
             boolean inbetweendates = false;
             String line = br.readLine();
+
             while (line != null) {
                 String[] lineItems;
                 lineItems = line.split(",");
-
                 if (lineItems[0].equals(dateStarting)) {
                     inbetweendates = true;
                 }
-
                 if (inbetweendates) {
                     outputLines.add(line);
                 }
-
                 if (lineItems[0].equals(dateEnding)) {
                     inbetweendates = false;
                 }
-
                 line = br.readLine();
             }
-
             for (int i = outputLines.size(); i > 0; i--) {
                 fw.write(outputLines.get(i - 1));
                 fw.write("\n");
                 fw.flush();
             }
-
-            fw.close();
-            br.close();
-            fr.close();
+            getHistory(outputFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,15 +76,12 @@ public class GoogleExtractor {
     public void getHistory(String fileName) {
         try {
             historicalData = new ArrayList();
-
             FileReader fr = new FileReader(fileName);
             BufferedReader br = new BufferedReader(fr);
-
             String rawLine = br.readLine();
             while (rawLine != null) {
                 try {
                     String[] rawLineSplit = rawLine.split(",");
-
                     String date = rawLineSplit[0];
                     //O H L C V
                     double open = Double.parseDouble(rawLineSplit[1]);
@@ -96,7 +89,6 @@ public class GoogleExtractor {
                     double low = Double.parseDouble(rawLineSplit[3]);
                     double close = Double.parseDouble(rawLineSplit[4]);
                     int volume = Integer.parseInt(rawLineSplit[5]);
-
                     Historical historicalDataPoint = new Historical(date, open, high, low, close, volume);
                     historicalData.add(historicalDataPoint);
                 } catch (Exception e) {
@@ -120,11 +112,10 @@ public class GoogleExtractor {
         }
     }
 
-    public void writeTechnicals(String fileName) {
+    public void writeTechnicals() {
         try {
-            String outputFile = fileName.replaceAll(".csv", "") + "-technicals.csv";
+            String outputFile = fullFileName.replaceAll(".csv", "") + " Indicators.csv";
             FileWriter fw = new FileWriter(outputFile);
-
             for (int i = 0; i < historicalData.size(); i++) {
                 String date = historicalData.get(i).date;
                 double open = historicalData.get(i).open;
@@ -142,10 +133,8 @@ public class GoogleExtractor {
                 fw.write("\n");
                 fw.flush();
             }
-
-            fw.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -172,16 +161,13 @@ public class GoogleExtractor {
                     //fitnessDates.add("1-Jul-11");
                     //fitnessDates.add("3-Oct-11");
                     fitnessDates.add("30-Dec-11");
-                    
 
                     while (line != null) {
-
                         String[] lineSplit = line.split(",");
                         if (fitnessDates.contains(lineSplit[0])) {
                             fw.write(files.replaceAll(".csv", "") + "," + lineSplit[4] + "\n");
                             fw.flush();
                         }
-
                         line = br.readLine();
                     }
                 }
@@ -190,27 +176,6 @@ public class GoogleExtractor {
             ex.printStackTrace();
         }
     }
-
-    public static void main(String args[]) {
-        GoogleExtractor extractor = new GoogleExtractor();
-
-        String path = "Fitness";
-        String files;
-        File folder = new File(path);
-        File[] listOfFiles = folder.listFiles();
-
-        /*for (int i = 0; i < listOfFiles.length; i++) {
-
-         if (listOfFiles[i].isFile()) {
-         //files = listOfFiles[i].getName();
-         //extractor.extractDates("30-Dec-11", "4-Jan-10", files);
-         /*extractor.getHistory("Google/" + files);
-         extractor.calculateAccDist();
-         extractor.writeTechnicals("Google/" + files);*/
-        //  }
-        //}
-        extractor.extractFitnessFile("Fitness-30-Dec-11.csv");
-    }
 }
 
 class Historical {
@@ -218,7 +183,6 @@ class Historical {
     String date;
     double open, high, low, close;
     int volume;
-
     double accDist;
 
     Historical(String d, double o, double h, double l, double c, int v) {
@@ -233,5 +197,4 @@ class Historical {
     public void setAccDist(double accDist) {
         this.accDist = accDist;
     }
-
 }

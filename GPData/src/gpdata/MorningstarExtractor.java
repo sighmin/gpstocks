@@ -6,64 +6,66 @@
 
 package gpdata;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class MorningstarExtractor {
+public class MorningstarExtractor extends Extractor {
 
     String morningstarFileName;
     ArrayList<Indicator> rawData;
     ArrayList<Integer> yearsToExtract;
     ArrayList<String> indicatorsToExtract;
 
-    MorningstarExtractor(String[] years, String[] indicatorsToE, String fileName) {
-        rawData = new ArrayList();
-        yearsToExtract = new ArrayList();
-        indicatorsToExtract = new ArrayList();
-
+    MorningstarExtractor(String[] years, String[] indicators, String fileName) {
+        super();
+        initializeVariables(years, indicators);
         morningstarFileName = fileName;
+    }
 
-        for (int i = 0; i < indicatorsToE.length; i++) {
-            indicatorsToExtract.add(indicatorsToE[i]);
-        }
+    private void initializeVariables(String[] years, String[] indicators) {
+        rawData = new ArrayList();
+        indicatorsToExtract = new ArrayList();
+        indicatorsToExtract.addAll(Arrays.asList(indicators));
+        initYearsToExtract(years);
+    }
 
-        if (years[0].equals("2003")) {
-            yearsToExtract.add(9);
-        }
-        if (years[0].equals("2004")) {
-            yearsToExtract.add(9);
-        }
-        if (years[0].equals("2005")) {
-            yearsToExtract.add(9);
-        }
-        if (years[0].equals("2006")) {
-            yearsToExtract.add(9);
-        }
-        if (years[0].equals("2007")) {
-            yearsToExtract.add(9);
-        }
-        if (years[0].equals("2008")) {
-            yearsToExtract.add(9);
-        }
-        if (years[0].equals("2009")) {
-            yearsToExtract.add(9);
-        }
-        if (years[0].equals("2010")) {
-            yearsToExtract.add(9);
-        }
-        if (years[1].equals("2011")) {
-            yearsToExtract.add(10);
+    private void initYearsToExtract(String[] years) {
+        yearsToExtract = new ArrayList();
+
+        for (String year : years) {
+            try {
+                int yearInt = Integer.parseInt(year);
+                switch (yearInt) {
+                    case 2012:
+                        yearsToExtract.add(11);
+                    case 2011:
+                        yearsToExtract.add(10);
+                    case 2010:
+                        yearsToExtract.add(9);
+                    case 2009:
+                        yearsToExtract.add(8);
+                    case 2008:
+                        yearsToExtract.add(7);
+                    case 2007:
+                        yearsToExtract.add(6);
+                    case 2006:
+                        yearsToExtract.add(5);
+                    case 2005:
+                        yearsToExtract.add(4);
+                    case 2004:
+                        yearsToExtract.add(3);
+                    case 2003:
+                        yearsToExtract.add(2);
+                }
+            } catch (Exception exception) {
+                System.out.println("Error caught: " + exception);
+            }
         }
     }
 
-    public void extractData() {
-        try {
-            FileReader fr = new FileReader(morningstarFileName);
-            BufferedReader br = new BufferedReader(fr);
+    public void extractData() throws Exception {
+        try (BufferedReader br = this.getBufferedReader(morningstarFileName)) {
             String line = br.readLine();
             while (line != null) {
                 String[] lineSplitComma = line.split(",");
@@ -77,15 +79,14 @@ public class MorningstarExtractor {
                 }
                 line = br.readLine();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     public void writeDataToFile() {
         try {
-            String outputFileName = morningstarFileName.replaceAll(" Key Ratios.csv", "") + "_summary.csv";
-            FileWriter fw = new FileWriter(outputFileName);
+            String outputFileName = morningstarFileName.replaceAll(".csv", "") + " Indicators.csv";
+            BufferedReader br;
+            FileWriter fw = this.getFileWriter(outputFileName);
             for (int i = 0; i < rawData.size(); i++) {
                 if (indicatorsToExtract.contains(rawData.get(i).indicatorName)) {
                     fw.write(rawData.get(i).indicatorName);
@@ -97,13 +98,9 @@ public class MorningstarExtractor {
                     fw.flush();
                 }
             }
-
-            FileReader fr = new FileReader(outputFileName);
-            BufferedReader br = new BufferedReader(fr);
+            br = this.getBufferedReader(outputFileName);
             String lineOut = br.readLine();
-            
             boolean hadRD = false;
-            
             while (lineOut != null) {
                 String lineOutSplit[] = lineOut.split(",");
                 if (lineOutSplit[0].equals("R&D")) {
@@ -112,72 +109,14 @@ public class MorningstarExtractor {
                 }
                 lineOut = br.readLine();
             }
-
             if (hadRD == false) {
                 String RNDAvgOut = "R&D,13.575769,13.575769";
                 fw.write(RNDAvgOut);
                 System.out.println("R&D");
             }
-
-            fw.close();
             br.close();
-            fr.close();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public static void main(String args[]) {
-        String[] years = {"2010", "2011"};
-        /*
-         2 gross margin
-         4 operating margin
-         6 EPS 
-         10 Book value per share
-         20 SG&A as a % of sales
-         21 R&D as a % of sales
-         29 Return on assets
-         31 Return on equity
-         32 Return on invested capital
-         53 Cap Ex as a % of Sales (growth yoy)
-         59 Inventory (growth yoy)
-         61 Total Current Assets (growth yoy)
-         70 Total Current Liabilities (growth yoy)
-         76 Current Ratio
-         77 Quick Ratio
-         */
-        String[] indicators = {
-            "Gross Margin %",
-            "Operating Margin %",
-            "Earnings Per Share USD",
-            "Book Value Per Share USD",
-            "SG&A",
-            "R&D",
-            "Return on Assets %",
-            "Return on Equity %",
-            "Return on Invested Capital %",
-            "Cap Ex as a % of Sales",
-            "Total Current Assets",
-            "Total Current Liabilities",
-            "Current Ratio",
-            "Quick Ratio"};
-
-        // Directory path here
-        String path = "Morningstar";
-        String files;
-        File folder = new File(path);
-        File[] listOfFiles = folder.listFiles();
-
-        for (int i = 0; i < listOfFiles.length; i++) {
-
-            if (listOfFiles[i].isFile()) {
-                files = listOfFiles[i].getName();
-
-                MorningstarExtractor extractor = new MorningstarExtractor(years, indicators, "Morningstar/" + files);
-                extractor.extractData();
-                extractor.writeDataToFile();
-            }
         }
     }
 }
