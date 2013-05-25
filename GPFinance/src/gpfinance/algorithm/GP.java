@@ -143,6 +143,7 @@ public class GP {
             }
             
             // Selection for reproduction
+            //TODO: Agree on selection here with Stu
             ArrayList<Individual> candidatePopulation = reproductionSelectionStrategy.select(population, population.size()/2);
             
             // Reproduction producing P'
