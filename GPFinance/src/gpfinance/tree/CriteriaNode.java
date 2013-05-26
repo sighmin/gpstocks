@@ -34,7 +34,7 @@ public class CriteriaNode extends Node {
 
     public static CriteriaNode getRandomFundNode() {
         DecisionNode randomDecision = DecisionNode.getRandom();
-        DecisionNode oppositeDecision = randomDecision.decision == Decision.BUY ? new DecisionNode(Decision.SELL) : new DecisionNode(Decision.SELL);
+        DecisionNode oppositeDecision = randomDecision.decision == Decision.BUY ? new DecisionNode(Decision.SELL) : new DecisionNode(Decision.BUY);
         return new CriteriaNode(
                 randomDecision,
                 oppositeDecision,
@@ -45,7 +45,7 @@ public class CriteriaNode extends Node {
 
     public static CriteriaNode getRandomTechNode() {
         DecisionNode randomDecision = DecisionNode.getRandom();
-        DecisionNode oppositeDecision = randomDecision.decision == Decision.BUY ? new DecisionNode(Decision.SELL) : new DecisionNode(Decision.SELL);
+        DecisionNode oppositeDecision = randomDecision.decision == Decision.BUY ? new DecisionNode(Decision.SELL) : new DecisionNode(Decision.BUY);
         return new CriteriaNode(
                 randomDecision,
                 oppositeDecision,

@@ -19,19 +19,19 @@ public class GP {
 
     private static final int numMutations = 6;
     /* Control Parameters */
-    private int generations = 500;
-    private int populationSize = 25;
+    private int generations = 25;
+    private int populationSize = 30;
     private ArrayList<Individual> population = new ArrayList(populationSize);
-    //                              {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] initialMutationRates = {1.0, 0.0, 0.75, 0.75, 0.75, 0.9};
-    //                              {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates = {0.5, 3.0, 0.2, 0.4, 0.2, 0.4};
+    //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
+    private double[] initialMutationRates = {0.8,   0.0,   0.75,      0.75, 0.75,       0.9};
+    //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
+    private double[] finalMutationRates =   {0.4,   0.4,   0.2,       0.4,  0.2,        0.4};
     private double initialCrossoverProb = 0.8;
     private double finalCrossoverProb = 0.6;
     private char analysisType = 'F';
     /* Strategies */
     private InitializationStrategy initializationStrategy = new InitializationStrategy(analysisType);
-    private SelectionStrategy populationSelectionStrategy = new MuLambdaSelectionStrategy();
+    private SelectionStrategy populationSelectionStrategy = new MuLambdaSelectionStrategy(); // elitism
     private SelectionStrategy reproductionSelectionStrategy = new RankBasedSelectionStrategy();
     private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
     private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
@@ -160,7 +160,7 @@ public class GP {
             measure(mutationOffspring, gen);
             
             // Select P(t+1) from union of offspring: P U P'' -- should we select from P U P' U P''
-            previousPopulation.addAll(crossoverOffspring); //crossed over -- should we include these, even?
+            //previousPopulation.addAll(crossoverOffspring); //crossed over -- should we include these, even?
             previousPopulation.addAll(mutationOffspring);  //crossed over and mutated
             population = populationSelectionStrategy.select(previousPopulation, populationSize);
 
