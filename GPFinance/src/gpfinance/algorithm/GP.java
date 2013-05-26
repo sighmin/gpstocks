@@ -6,6 +6,7 @@ import gpfinance.algorithm.interfaces.SelectionStrategy;
 import gpfinance.algorithm.interfaces.MutationStrategy;
 import gpfinance.algorithm.interfaces.CrossoverStrategy;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -21,7 +22,7 @@ public class GP {
     //                              {grow,  trunc, indicator, leaf, inequality, gauss}
     private double[] initialMutationRates = {1.0, 0.0,   0.75,       0.75,  0.75,        0.9};
     //                              {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates =   {0.4, 0.5,   0.2,       0.4,  0.2,        0.4};
+    private double[] finalMutationRates =   {0.5, 0.2,   0.2,       0.4,  0.2,        0.4};
     private double initialCrossoverProb = 0.8;
     private double finalCrossoverProb = 0.6;
     private char analysisType = 'F';
@@ -162,6 +163,9 @@ public class GP {
             ++t;
             U.m(t);
         } while (t < generations);
+        
+        Collections.sort(population,Individual.MaximizeComparator);
+        population.get(0).print();
     }
     
 }

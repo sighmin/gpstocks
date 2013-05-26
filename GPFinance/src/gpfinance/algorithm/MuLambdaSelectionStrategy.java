@@ -22,7 +22,7 @@ public class MuLambdaSelectionStrategy implements SelectionStrategy {
         
         // loop from fittest individuals up to selectionSize
         for (int i = 0; i < selectionSize; ++i){
-            selected.add(pool.get(i));
+            selected.add(pool.get(i).clone());
         }
         
         return selected;

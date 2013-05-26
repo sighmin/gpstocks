@@ -100,7 +100,7 @@ public class Simulator extends Thread {
             }
 
             Indicator[] techInd = {Tech.EXAMPLE};
-            Indicator[] fundInd = {Fund.GM};
+            Indicator[] fundInd = {Fund.GrossMargin09};
             for (int i = 0; i < 5; ++i) {
                 U.m(Fund.getRandom());
             }

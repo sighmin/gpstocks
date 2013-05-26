@@ -52,7 +52,7 @@ public class GPData {
                     try {
                         technicalExtractor = new GoogleExtractor(dates, TechnicalIndicators, fullFileName);
                         technicalExtractor.extractBetweenDates();
-                        technicalExtractor.calculateAccDist();
+                        technicalExtractor.calculateTechnicalIndicators();
                         technicalExtractor.writeTechnicals();
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -65,13 +65,13 @@ public class GPData {
         for (File file : listOfFiles) {
             if (file.getName().contains("temp")) {
                 file.delete();
-            } 
+            }
         }
     }
 
     public static void main(String[] args) {
-        String[] yearsToExtract = {"2010", "2011"};
-        String[] datesToExtract = {"30-Dec-11", "4-Jan-10"};
+        String[] yearsToExtract = {"2009", "2010"};
+        String[] datesToExtract = {"30-Dec-11", "4-Jan-10", "3-Jan-11"};
         String[] fundamentals = {"Gross Margin %", "Operating Margin %",
             "Earnings Per Share USD", "Book Value Per Share USD", "SG&A",
             "R&D", "Return on Assets %", "Return on Equity %",

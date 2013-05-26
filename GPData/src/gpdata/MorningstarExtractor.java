@@ -7,6 +7,7 @@
 package gpdata;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -39,24 +40,34 @@ public class MorningstarExtractor extends Extractor {
                 switch (yearInt) {
                     case 2012:
                         yearsToExtract.add(11);
+                        break;
                     case 2011:
                         yearsToExtract.add(10);
+                        break;
                     case 2010:
                         yearsToExtract.add(9);
+                        break;
                     case 2009:
                         yearsToExtract.add(8);
+                        break;
                     case 2008:
                         yearsToExtract.add(7);
+                        break;
                     case 2007:
                         yearsToExtract.add(6);
+                        break;
                     case 2006:
                         yearsToExtract.add(5);
+                        break;
                     case 2005:
                         yearsToExtract.add(4);
+                        break;
                     case 2004:
                         yearsToExtract.add(3);
+                        break;
                     case 2003:
                         yearsToExtract.add(2);
+                        break;
                 }
             } catch (Exception exception) {
                 System.out.println("Error caught: " + exception);
@@ -82,19 +93,36 @@ public class MorningstarExtractor extends Extractor {
         }
     }
 
+    private double change(double close, double open) {
+        double difference = close - open;
+        double movement = (difference / open) * 100;
+        //System.out.println("open: " + open + ", close: " + close + ", movement" + movement);
+        return movement;
+    }
+
     public void writeDataToFile() {
         try {
+            DecimalFormat df = new DecimalFormat("#0.000");
             String outputFileName = morningstarFileName.replaceAll(".csv", "") + " Indicators.csv";
             BufferedReader br;
             FileWriter fw = this.getFileWriter(outputFileName);
             for (int i = 0; i < rawData.size(); i++) {
                 if (indicatorsToExtract.contains(rawData.get(i).indicatorName)) {
-                    fw.write(rawData.get(i).indicatorName);
-                    for (int j = 0; j < rawData.get(i).values.length; j++) {
-                        fw.write("," + rawData.get(i).values[j]);
+
+                    String indicatorValue2009 = rawData.get(i).values[0];
+                    String indicatorValue2010 = rawData.get(i).values[1];
+                    if (indicatorValue2009.equals("")) {
+                        indicatorValue2009 = indicatorValue2010;
                     }
 
-                    fw.write("\n");
+                    fw.write(rawData.get(i).indicatorName + " 2009," + indicatorValue2009 + "\n");
+                    fw.write(rawData.get(i).indicatorName + " 2010," + indicatorValue2010 + "\n");
+
+                    double indicatorValue2009D = Double.parseDouble(indicatorValue2009);
+                    double indicatorValue2010D = Double.parseDouble(indicatorValue2010);
+                    double change = change(indicatorValue2010D, indicatorValue2009D);
+                    fw.write(rawData.get(i).indicatorName + " YoY % change," + df.format(change) + "\n");
+
                     fw.flush();
                 }
             }
@@ -118,16 +146,5 @@ public class MorningstarExtractor extends Extractor {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-}
-
-class Indicator {
-
-    String indicatorName;
-    String[] values;
-
-    Indicator(String name, int valuesSize) {
-        indicatorName = name;
-        values = new String[valuesSize];
     }
 }
