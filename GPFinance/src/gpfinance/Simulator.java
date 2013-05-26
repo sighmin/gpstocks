@@ -179,7 +179,7 @@ public class Simulator extends Thread {
             for (int i = 0; i < numpop; ++i){
                 pop.get(i).print();
             }
-            Collections.sort(pop, Individual.MaximizeComparator);
+            Collections.sort(pop, Individual.DescendingFitness);
             U.m("AFTER");
             for (int i = 0; i < numpop; ++i){
                 pop.get(i).print();

@@ -18,7 +18,7 @@ public class MuLambdaSelectionStrategy implements SelectionStrategy {
         ArrayList<Individual> selected = new ArrayList(selectionSize);
         
         // sort pool by fitness
-        Collections.sort(selected, Individual.MaximizeComparator);
+        Collections.sort(selected, Individual.DescendingFitness);
         
         // loop from fittest individuals up to selectionSize
         for (int i = 0; i < selectionSize; ++i){

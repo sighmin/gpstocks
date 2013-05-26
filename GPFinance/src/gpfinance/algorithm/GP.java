@@ -138,9 +138,9 @@ public class GP {
             }
             
             // Clone previous generation P
-            ArrayList<Individual> previousPopulation = new ArrayList(population.size());
+            ArrayList<Individual> previousPopulation = new ArrayList();
             for (int i = 0; i < previousPopulation.size(); ++i){
-                previousPopulation.set(i, population.get(i).clone());
+                previousPopulation.add(population.get(i).clone());
             }
             
             // Selection for reproduction
@@ -164,7 +164,7 @@ public class GP {
             U.m(t);
         } while (t < generations);
         
-        Collections.sort(population,Individual.MaximizeComparator);
+        Collections.sort(population,Individual.DescendingFitness);
         population.get(0).print();
     }
     
