@@ -15,7 +15,7 @@ import java.util.Comparator;
  */
 public class Individual {
     private DecisionTree tree;
-    private Fitness fitness;
+    private Fitness fitness = new Fitness();
     
     public Individual() {}
     
@@ -46,6 +46,9 @@ public class Individual {
         
         // Fitness calculateReturn(Decision[])
         
+        
+        //stub
+        fitness.returnValue = tree.size() + U.randomVal();
     }
     
     public double getFitness(){

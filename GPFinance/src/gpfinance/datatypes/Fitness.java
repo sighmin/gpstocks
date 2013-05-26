@@ -8,6 +8,8 @@ package gpfinance.datatypes;
 public class Fitness {
     public double returnValue;
     
+    public Fitness() { }
+    
     public Fitness(double returnValue){
         this.returnValue = returnValue;
     }
