@@ -103,7 +103,7 @@ public class GPFinance {
                 + "USAGE\n"
                 + "    java -jar GPFinance.jar help\n"
                 + "    java -jar GPFinance.jar run [OPTIONS]\n"
-                + "    java -jar GPFinance.jar test [all|random|tree|datatypes]\n");
+                + "    java -jar GPFinance.jar test [TEST_OPTIONS]\n");
     }
 
     public static void help() {
@@ -142,12 +142,26 @@ public class GPFinance {
                 + "  TEST_OPTIONS\n"
                 + "      all\n"
                 + "          Runs all the tests. This option is particularly verbose.\n"
+                + "      all-operators\n"
+                + "          Runs all operator tests: initialization, selection, crossover, mutation.\n"
+                + "      initialization\n"
+                + "          Tests initialization strategy\n"
+                + "      selection\n"
+                + "          Tests selection strategies\n"
+                + "      mutation\n"
+                + "          Tests mutation strategies\n"
+                + "      crossover\n"
+                + "          Tests crossover strategies\n"
+                + "      clone\n"
+                + "          Tests class clone methods\n"
                 + "      random\n"
                 + "          Tests the random generators and resulting random data types.\n"
                 + "      datatypes\n"
                 + "          Tests the abstract data types and enumerated types.\n"
                 + "      tree\n"
                 + "          Tests the decision tree implementation operations.\n"
+                + "      adhoc\n"
+                + "          Tests the latest code under development\n"
                 + "");
     }
 }
