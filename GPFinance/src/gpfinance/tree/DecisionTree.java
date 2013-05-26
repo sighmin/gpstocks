@@ -147,6 +147,10 @@ public class DecisionTree {
         root.printChain();
     }
     
+    public Node getRoot(){
+        return this.root;
+    }
+    
     @Override
     public DecisionTree clone(){
         return new DecisionTree(this.type, this.numNodes, (Node) this.root.clone());

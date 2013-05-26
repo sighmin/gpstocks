@@ -63,7 +63,7 @@ public class SexualCrossoverStrategy implements CrossoverStrategy {
     }
     
     //TODO: swap this back to private access
-    private void crossoverPair(Individual parent1, Individual parent2){
+    protected void crossoverPair(Individual parent1, Individual parent2){
         final int PREV = 0; final int CURR = 1;
         // Destructive crossover, meaning, it changes the parents into the offspring
         Node[] p1nodes = parent1.getTree().getRandomNonterminalNode(false);
