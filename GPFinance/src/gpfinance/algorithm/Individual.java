@@ -41,13 +41,6 @@ public class Individual {
         return new Individual(this.tree.clone(), this.fitness.clone());
     }
     
-    @Override
-    public String toString(){
-        String s = "I [size=";
-        s += tree.size() + "]";
-        return s;
-    }
-    
     public void measure(int generation, ArrayList<Security> securities){
         // Decision[] evaluate() and create list of decisions
         Decision[] decisions = tree.evaluate(securities);
@@ -56,7 +49,7 @@ public class Individual {
         //decisions[0] == Decision.BUY
         
         //stub
-        fitness.returnValue = tree.size();
+        fitness.returnValue = Math.log(tree.size()) + U.rint(4);
     }
     
     public double getFitness(){
@@ -87,7 +80,7 @@ public class Individual {
     }
 
     public void print(){
-        U.m("f(): " + fitness.getFitness());
+        U.m("f() = " + fitness.getFitness());
         tree.print();
     }
 

@@ -159,25 +159,18 @@ public class GP {
             ArrayList<Individual> mutationOffspring = mutationStrategy.mutate(crossoverOffspring, progress);
             measure(mutationOffspring, gen);
             
-            U.p("mutated sizes: ");
-            printPopulationFitnesses(mutationOffspring);
-
             // Select P(t+1) from union of offspring: P U P'' -- should we select from P U P' U P''
             previousPopulation.addAll(crossoverOffspring); //crossed over -- should we include these, even?
             previousPopulation.addAll(mutationOffspring);  //crossed over and mutated
-            printPopulationFitnesses(mutationOffspring);
             population = populationSelectionStrategy.select(previousPopulation, populationSize);
 
             // Advance to next generation
             ++gen;
-            U.m(gen);
-            //printBest();
-            U.p("new pop sizes: ");
-            printPopulationFitnesses(population);
+            U.m("****************************************  " + gen + "  ****************************************");
+            printBest();
         } while (gen < generations);
 
         printBest();
-
     }
 
     private void measure(ArrayList<Individual> individuals, int generation) {
