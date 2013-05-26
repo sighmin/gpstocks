@@ -46,10 +46,10 @@ public class Individual {
         Decision[] decisions = tree.evaluate(securities);
         
         // Fitness calculateReturn(Decision[])
-        
+        //decisions[0] == Decision.BUY
         
         //stub
-        fitness.returnValue = tree.size() + U.rint(100);
+        fitness.returnValue = tree.size();
     }
     
     public double getFitness(){

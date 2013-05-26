@@ -22,7 +22,7 @@ public class GP {
     //                              {grow,  trunc, indicator, leaf, inequality, gauss}
     private double[] initialMutationRates = {1.0, 0.0,   0.75,       0.75,  0.75,        0.9};
     //                              {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates =   {0.5, 0.2,   0.2,       0.4,  0.2,        0.4};
+    private double[] finalMutationRates =   {0.5, 0.0,   0.2,       0.4,  0.2,        0.4};
     private double initialCrossoverProb = 0.8;
     private double finalCrossoverProb = 0.6;
     private char analysisType = 'F';
@@ -139,7 +139,7 @@ public class GP {
             
             // Clone previous generation P
             ArrayList<Individual> previousPopulation = new ArrayList();
-            for (int i = 0; i < previousPopulation.size(); ++i){
+            for (int i = 0; i < population.size(); ++i){
                 previousPopulation.add(population.get(i).clone());
             }
             
@@ -155,17 +155,32 @@ public class GP {
             ArrayList<Individual> mutationOffspring = mutationStrategy.mutate(crossoverOffspring, progress);
             
             // Select P(t+1) from union of offspring: P U P' U P''
-            previousPopulation.addAll(crossoverOffspring); //crossed over -- should we include these, even?
+            //previousPopulation.addAll(crossoverOffspring); //crossed over -- should we include these, even?
             previousPopulation.addAll(mutationOffspring);  //crossed over and mutated
             population = populationSelectionStrategy.select(previousPopulation, population.size());
             
             // Advance to next generation
             ++t;
             U.m(t);
+            //printBest();
+            //printPopulationFitnesses();
         } while (t < generations);
         
+        printBest();
+        
+    }
+    
+    private void printBest(){
         Collections.sort(population,Individual.DescendingFitness);
         population.get(0).print();
+    }
+    
+    private void printPopulationFitnesses(){
+        Collections.sort(population, Individual.DescendingFitness);
+        for (Individual i:population){
+            U.p(i.getFitness() + ", ");
+        }
+        U.pl();
     }
     
 }
