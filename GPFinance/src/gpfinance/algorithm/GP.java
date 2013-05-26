@@ -83,10 +83,10 @@ public class GP {
             String tmp = ((String)options.get("reproductionSelection"));
             switch (tmp) {
                 case "rankbased":
-                    this.populationSelectionStrategy = new MuLambdaSelectionStrategy();
+                    this.populationSelectionStrategy = new RankBasedSelectionStrategy();
                     break;
                 case "mulambda":
-                    this.populationSelectionStrategy = new RankBasedSelectionStrategy();
+                    this.populationSelectionStrategy = new MuLambdaSelectionStrategy();
                     break;
                 default:
                     this.populationSelectionStrategy = new RandomSelectionStrategy();
