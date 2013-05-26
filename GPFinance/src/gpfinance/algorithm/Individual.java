@@ -2,7 +2,11 @@
 package gpfinance.algorithm;
 
 import gpfinance.U;
+import gpfinance.datatypes.Decision;
+import gpfinance.datatypes.Fitness;
+import gpfinance.datatypes.Security;
 import gpfinance.tree.DecisionTree;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
@@ -11,7 +15,7 @@ import java.util.Comparator;
  */
 public class Individual {
     private DecisionTree tree;
-    private double fitness = Double.NEGATIVE_INFINITY;
+    private Fitness fitness = new Fitness();
     
     public Individual() {}
     
@@ -27,28 +31,35 @@ public class Individual {
         this.tree = tree;
     }
     
-    public Individual(DecisionTree tree, double fitness) {
+    public Individual(DecisionTree tree, Fitness fitness) {
         this.tree = tree;
     }
     
     @Override
     public Individual clone(){
-        return new Individual(this.tree.clone(), this.fitness);
+        return new Individual(this.tree.clone(), this.fitness.clone());
     }
     
-    public void measure(int t){
-        this.fitness = (double) U.rint(t + 10);
+    public void measure(int generation, ArrayList<Security> securities){
+        // Decision[] evaluate() and create list of decisions
+        Decision[] decisions = tree.evaluate(securities);
+        
+        // Fitness calculateReturn(Decision[])
+        
+        
+        //stub
+        fitness.returnValue = tree.size() + U.randomVal();
     }
     
     public double getFitness(){
-        return this.fitness;
+        return this.fitness.getFitness();
     }
     
     public static Comparator<Individual> MinimizeComparator = new Comparator<Individual>(){
         @Override
         public int compare(Individual o1, Individual o2) {
-            Double d1 = o1.fitness;
-            Double d2 = o2.fitness;
+            Double d1 = o1.fitness.getFitness();
+            Double d2 = o2.fitness.getFitness();
             return d1.compareTo(d2);
         }
     };
@@ -56,8 +67,8 @@ public class Individual {
     public static Comparator<Individual> MaximizeComparator = new Comparator<Individual>(){
         @Override
         public int compare(Individual o1, Individual o2) {
-            Double d1 = o1.fitness;
-            Double d2 = o2.fitness;
+            Double d1 = o1.fitness.getFitness();
+            Double d2 = o2.fitness.getFitness();
             return d2.compareTo(d1);
         }
     };

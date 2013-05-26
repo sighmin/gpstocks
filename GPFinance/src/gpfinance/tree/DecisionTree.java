@@ -1,6 +1,8 @@
 package gpfinance.tree;
 
 import gpfinance.U;
+import gpfinance.datatypes.Decision;
+import gpfinance.datatypes.Security;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -245,5 +247,15 @@ public class DecisionTree {
         Node[] nodes = getRandomNonterminalNode(false);
         if (nodes != null)
             ((CriteriaNode) nodes[1]).randomizeIndicator();
+    }
+
+    public Decision[] evaluate(ArrayList<Security> securities) {
+        Decision[] decisions = new Decision[securities.size()];
+        
+        for (int i = 0; i < securities.size(); ++i){
+            decisions[i] = root.eval(securities.get(i).values);
+        }
+        
+        return decisions;
     }
 }
