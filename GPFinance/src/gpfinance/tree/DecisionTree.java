@@ -13,7 +13,7 @@ import java.util.Random;
 public class DecisionTree {
 
     private Node root = null;
-    private int numNodes = 42; // number of indicators
+    private int numNodes = 3; // number of indicators
     private char type = 'F';
     private static final int PREV = 0;
     private static final int CURR = 1;
@@ -43,7 +43,7 @@ public class DecisionTree {
     private void init() {
         root = generateRandomNonterminalNode();
 
-        for (int i = 0; i < numNodes; ++i) {
+        for (int i = 0; i < numNodes-1; ++i) { // -1 for the root node already generated
             insertRandom();
         }
     }

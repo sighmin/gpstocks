@@ -15,10 +15,10 @@ public class MuLambdaSelectionStrategy implements SelectionStrategy {
     
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize){
-        ArrayList<Individual> selected = new ArrayList(selectionSize);
+        ArrayList<Individual> selected = new ArrayList();
         
         // sort pool by fitness
-        Collections.sort(selected, Individual.DescendingFitness);
+        Collections.sort(pool, Individual.DescendingFitness);
         
         // loop from fittest individuals up to selectionSize
         for (int i = 0; i < selectionSize; ++i){

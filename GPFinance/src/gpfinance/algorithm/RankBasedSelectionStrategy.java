@@ -16,10 +16,10 @@ public class RankBasedSelectionStrategy implements SelectionStrategy {
     
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize){
-        ArrayList<Individual> selected = new ArrayList(selectionSize);
+        ArrayList<Individual> selected = new ArrayList();
         
         // Rank pool (sort)
-        Collections.sort(pool, Individual.DescendingFitness);
+        Collections.sort(pool, Individual.AscendingFitness);
         
         // Calculate probabilities
         int poolsize = pool.size();
@@ -38,7 +38,7 @@ public class RankBasedSelectionStrategy implements SelectionStrategy {
             for (int j = 0; j < poolsize; ++j){
                 probsum += probs[j];
                 if (probsum > r){
-                    selected.add(pool.get(j));
+                    selected.add(pool.get(j).clone());
                     break; // get another random value for next candidate selection
                 }
             }

@@ -41,6 +41,13 @@ public class Individual {
         return new Individual(this.tree.clone(), this.fitness.clone());
     }
     
+    @Override
+    public String toString(){
+        String s = "I [size=";
+        s += tree.size() + "]";
+        return s;
+    }
+    
     public void measure(int generation, ArrayList<Security> securities){
         // Decision[] evaluate() and create list of decisions
         Decision[] decisions = tree.evaluate(securities);
