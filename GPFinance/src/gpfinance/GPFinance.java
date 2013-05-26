@@ -37,6 +37,8 @@ public class GPFinance {
         final int numsims = 1;
         Simulator[] sims = new Simulator[numsims];
         
+        //
+        
         // Run
         for (int i = 0; i < numsims; ++i) {
             (sims[i] = new Simulator(args)).run();
