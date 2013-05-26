@@ -34,8 +34,6 @@ public class GPFinance {
             U.pl("Exception caught in main.");
             U.pl(e.getMessage());
             e.printStackTrace();
-        } finally {
-            U.m("\nGPFinance run complete.");
         }
     }
 
