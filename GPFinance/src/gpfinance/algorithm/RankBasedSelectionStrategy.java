@@ -19,7 +19,7 @@ public class RankBasedSelectionStrategy implements SelectionStrategy {
         ArrayList<Individual> selected = new ArrayList(selectionSize);
         
         // Rank pool (sort)
-        Collections.sort(pool, Individual.MaximizeComparator);
+        Collections.sort(pool, Individual.DescendingFitness);
         
         // Calculate probabilities
         int poolsize = pool.size();

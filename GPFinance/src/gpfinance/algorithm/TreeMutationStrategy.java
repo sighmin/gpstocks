@@ -45,56 +45,50 @@ public class TreeMutationStrategy implements MutationStrategy {
         for (int i = 0; i < numMutations; ++i){
             double scaledRate = (progress * finalRates[i]) + ((1.0 - progress) * initialRates[i]);
             rates[i] = scaledRate;
-            //U.p(scaledRate + "\t\t");
+            U.p(scaledRate + "\t\t");
         }
-        //U.pl("");
+        U.pl("");
         
         // Mutate
         // for every individual
         for (int i = 0; i < popsize; ++i){
             // for every type of mutation
+            Individual ind = selectedPop.get(i).clone();
             for (int j = 0; j < numMutations; ++j){
                 double r = U.r();
                 // grow or trunc rates
                 if (j == 0 || j == 1){
                     if (r < rates[j]){
-                        Individual ind = selectedPop.get(i).clone();
                         switch (j){
                             case 0:
                                 growMutation(ind);
-                                mutatedOffspring.add(ind);
                                 break;
                             case 1:
                                 truncMutation(ind);
-                                mutatedOffspring.add(ind);
                                 break;
                         }
                     }
                 // other mutation rates
                 } else {
                     if (r < (rates[j]/2.0)){ // necessary so mutation isn't too large a change on the tree
-                        Individual ind = selectedPop.get(i).clone();
                         switch (j){
                             case 2:
                                 nonterminalNodeMutation(ind);
-                                mutatedOffspring.add(ind);
                                 break;
                             case 3:
                                 terminalNodeMutation(ind);
-                                mutatedOffspring.add(ind);
                                 break;
                             case 4:
                                 swapMutation(ind);
-                                mutatedOffspring.add(ind);
                                 break;
                             case 5:
                                 gaussianMutation(ind);
-                                mutatedOffspring.add(ind);
                                 break;
                         }
                     }
                 }
-            }
+            } // end mutation types
+            mutatedOffspring.add(ind);
         }
         
         return mutatedOffspring;

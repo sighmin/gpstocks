@@ -166,12 +166,16 @@ public class GP {
             //printPopulationFitnesses();
         } while (t < generations);
         
+<<<<<<< HEAD
+        Collections.sort(population,Individual.MinimizeComparator);
+=======
         printBest();
         
     }
     
     private void printBest(){
         Collections.sort(population,Individual.DescendingFitness);
+>>>>>>> 0ccd1dde474c7b34aad3d501bf2009ead622c295
         population.get(0).print();
     }
     

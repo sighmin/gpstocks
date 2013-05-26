@@ -33,6 +33,7 @@ public class Individual {
     
     public Individual(DecisionTree tree, Fitness fitness) {
         this.tree = tree;
+        this.fitness = fitness;
     }
     
     @Override
@@ -45,17 +46,17 @@ public class Individual {
         Decision[] decisions = tree.evaluate(securities);
         
         // Fitness calculateReturn(Decision[])
-        
+        //decisions[0] == Decision.BUY
         
         //stub
-        fitness.returnValue = tree.size() + U.randomVal();
+        fitness.returnValue = tree.size();
     }
     
     public double getFitness(){
         return this.fitness.getFitness();
     }
     
-    public static Comparator<Individual> MinimizeComparator = new Comparator<Individual>(){
+    public static Comparator<Individual> AscendingFitness = new Comparator<Individual>(){
         @Override
         public int compare(Individual o1, Individual o2) {
             Double d1 = o1.fitness.getFitness();
@@ -64,7 +65,7 @@ public class Individual {
         }
     };
     
-    public static Comparator<Individual> MaximizeComparator = new Comparator<Individual>(){
+    public static Comparator<Individual> DescendingFitness = new Comparator<Individual>(){
         @Override
         public int compare(Individual o1, Individual o2) {
             Double d1 = o1.fitness.getFitness();
