@@ -171,7 +171,7 @@ public class Simulator extends Thread {
             ArrayList<Individual> pop = new ArrayList();
             for (int i = 0; i < numpop; ++i){
                 pop.add(new Individual('F', 0));
-                pop.get(i).measure(U.rint(numpop));
+                pop.get(i).measure(U.rint(numpop), new ArrayList());
             }
             
             U.m("Testing  sort...");

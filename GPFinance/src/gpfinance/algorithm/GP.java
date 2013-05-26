@@ -133,7 +133,7 @@ public class GP {
         do {
             // Measure individuals
             for (Individual individual : population){
-                individual.measure(t);
+                individual.measure(t, new ArrayList());
             }
             
             // Clone previous generation P

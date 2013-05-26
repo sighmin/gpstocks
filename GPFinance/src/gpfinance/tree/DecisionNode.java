@@ -33,6 +33,11 @@ public class DecisionNode extends Node {
     }
     
     @Override
+    public Decision eval(double[] indicators){
+        return decision;
+    }
+    
+    @Override
     public boolean isLeaf(){
         return true;
     }

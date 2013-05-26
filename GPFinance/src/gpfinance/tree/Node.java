@@ -2,6 +2,7 @@
 package gpfinance.tree;
 
 import gpfinance.U;
+import gpfinance.datatypes.Decision;
 
 /**
  * @date   2013-06-01
@@ -36,5 +37,9 @@ public class Node {
     @Override
     public Node clone(){
         return new Node(this.left.clone(), this.right.clone());
+    }
+    
+    public Decision eval(double[] indicators){
+        return null;
     }
 }

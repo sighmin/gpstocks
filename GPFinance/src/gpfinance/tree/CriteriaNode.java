@@ -1,6 +1,7 @@
 package gpfinance.tree;
 
 import gpfinance.U;
+import gpfinance.datatypes.Decision;
 import gpfinance.datatypes.Fund;
 import gpfinance.datatypes.Indicator;
 import gpfinance.datatypes.Tech;
@@ -32,18 +33,22 @@ public class CriteriaNode extends Node {
     }
 
     public static CriteriaNode getRandomFundNode() {
+        DecisionNode randomDecision = DecisionNode.getRandom();
+        DecisionNode oppositeDecision = randomDecision.decision == Decision.BUY ? new DecisionNode(Decision.SELL) : new DecisionNode(Decision.SELL);
         return new CriteriaNode(
-                DecisionNode.getRandom(),
-                DecisionNode.getRandom(),
+                randomDecision,
+                oppositeDecision,
                 Fund.getRandom(),
                 U.chance() ? '<' : '>',
                 U.randomVal());
     }
 
     public static CriteriaNode getRandomTechNode() {
+        DecisionNode randomDecision = DecisionNode.getRandom();
+        DecisionNode oppositeDecision = randomDecision.decision == Decision.BUY ? new DecisionNode(Decision.SELL) : new DecisionNode(Decision.SELL);
         return new CriteriaNode(
-                DecisionNode.getRandom(),
-                DecisionNode.getRandom(),
+                randomDecision,
+                oppositeDecision,
                 Tech.getRandom(),
                 U.chance() ? '<' : '>',
                 U.randomVal());
@@ -77,6 +82,29 @@ public class CriteriaNode extends Node {
     
     public void gaussValue() {
         value = value + U.getRandomGauss();
+    }
+       
+    @Override
+    public Decision eval(double[] indicators){
+        int index = indicator.getCode();
+        if (inequality == '<'){
+            if (indicators[index] < value){
+                // go left
+                return left.eval(indicators);
+            } else {
+                // go right
+                return right.eval(indicators);
+            }
+        // indicator == '>'
+        } else {
+            if (indicators[index] > value){
+                // go left
+                return left.eval(indicators);
+            } else {
+                // go right
+                return right.eval(indicators);
+            }
+        }
     }
     
     @Override
