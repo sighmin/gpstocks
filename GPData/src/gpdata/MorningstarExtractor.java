@@ -95,7 +95,8 @@ public class MorningstarExtractor extends Extractor {
 
     private double change(double close, double open) {
         double difference = close - open;
-        double movement = (difference / close) * close;
+        double movement = (difference / open) * 100;
+        //System.out.println("open: " + open + ", close: " + close + ", movement" + movement);
         return movement;
     }
 
@@ -119,7 +120,7 @@ public class MorningstarExtractor extends Extractor {
 
                     double indicatorValue2009D = Double.parseDouble(indicatorValue2009);
                     double indicatorValue2010D = Double.parseDouble(indicatorValue2010);
-                    double change = change(indicatorValue2009D, indicatorValue2010D);
+                    double change = change(indicatorValue2010D, indicatorValue2009D);
                     fw.write(rawData.get(i).indicatorName + " YoY % change," + df.format(change) + "\n");
 
                     fw.flush();

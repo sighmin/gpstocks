@@ -71,7 +71,7 @@ public class GPData {
 
     public static void main(String[] args) {
         String[] yearsToExtract = {"2009", "2010"};
-        String[] datesToExtract = {"30-Dec-11", "4-Jan-10"};
+        String[] datesToExtract = {"30-Dec-11", "4-Jan-10", "3-Jan-11"};
         String[] fundamentals = {"Gross Margin %", "Operating Margin %",
             "Earnings Per Share USD", "Book Value Per Share USD", "SG&A",
             "R&D", "Return on Assets %", "Return on Equity %",

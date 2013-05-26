@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class GoogleExtractor extends Extractor {
 
     private final String fullFileName;
-    private final String dateStarting, dateEnding;
+    private final String dateStarting, dateEnding, buyDate;
     private final String[] technicalIndicators;
     private ArrayList<String> outputLines;
     private ArrayList<Historical> historicalData;
@@ -39,6 +39,7 @@ public class GoogleExtractor extends Extractor {
         fullFileName = fileName;
         dateStarting = dates[0];
         dateEnding = dates[1];
+        buyDate = dates[2];
     }
 
     public void extractBetweenDates() {
@@ -105,6 +106,14 @@ public class GoogleExtractor extends Extractor {
 
     public void calculateTechnicalIndicators() {
         int size = historicalData.size();
+        for (int i = 0; i < size; i++) {
+            String date = historicalData.get(i).date;
+            if (date.equals(buyDate)) {
+                size = i;
+                break;
+            }
+        }
+
         DecimalFormat df = new DecimalFormat("#0.000");
 
         for (int i = 0; i < size; i++) {
@@ -130,8 +139,8 @@ public class GoogleExtractor extends Extractor {
         int[] percentChanges = {1, 7, 14, 30, 60, 90};
         for (int days : percentChanges) {
             double closeStart = historicalData.get(size - days).close;
-            double closeEnd = historicalData.get(size - 1).close;
-            double percentChange = priceChange(closeStart, closeEnd);
+            double closeEnd = historicalData.get(size).close;
+            double percentChange = priceChange(closeEnd, closeStart);
             String name = days + " Day % price movement";
             Indicator percentChangeIndicator = new Indicator(name, 1);
             percentChangeIndicator.values[0] = "" + df.format(percentChange);
@@ -221,7 +230,8 @@ public class GoogleExtractor extends Extractor {
 
     private double priceChange(double close, double open) {
         double difference = close - open;
-        double movement = (difference / close) * close;
+        double movement = (difference / open) * 100;
+        //System.out.println("open: " + open + ", close: " + close + ", movement" + movement);
         return movement;
     }
 
