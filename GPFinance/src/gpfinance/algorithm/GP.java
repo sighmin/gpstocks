@@ -15,17 +15,17 @@ import java.util.HashMap;
  */
 public class GP {
     /* Financial Data */
-    private static ArrayList<Security> securities = new ArrayList();
+    public static ArrayList<Security> securities = new ArrayList();
 
     private static final int numMutations = 6;
     /* Control Parameters */
-    private int generations = 25;
-    private int populationSize = 30;
+    private int generations = 5000;
+    private int populationSize = 50;
     private ArrayList<Individual> population = new ArrayList(populationSize);
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] initialMutationRates = {0.8,   0.0,   0.75,      0.75, 0.75,       0.9};
+    private double[] initialMutationRates = {0.5,   0.0,   0.75,      0.85, 0.75,       0.95};
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates =   {0.4,   0.4,   0.2,       0.4,  0.2,        0.4};
+    private double[] finalMutationRates =   {0.0,   0.5,   0.1,       0.5,  0.2,        0.8};
     private double initialCrossoverProb = 0.8;
     private double finalCrossoverProb = 0.6;
     private char analysisType = 'F';
@@ -166,8 +166,8 @@ public class GP {
 
             // Advance to next generation
             ++gen;
-            U.m("****************************************  " + gen + "  ****************************************");
-            printBest();
+            //U.m("****************************************  " + gen + "  ****************************************");
+            //printBest();
         } while (gen < generations);
 
         printBest();

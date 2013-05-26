@@ -90,7 +90,7 @@ public class U {
          System.out.println(MEAN + DEVIATION[0] * v / u);
          return (MEAN + DEVIATION[0] * v / u);*/
 
-        return (random.nextGaussian() * 100);
+        return (random.nextGaussian() * 50);
     }
 
 }

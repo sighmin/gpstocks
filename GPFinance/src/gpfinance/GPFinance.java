@@ -77,13 +77,11 @@ public class GPFinance {
             }
         }
 
-        for (Security s : securitiesData) {
-            System.out.println(s.ticker + ": " + s.values.toString());
-        }
-
         // Run
         for (int i = 0; i < numsims; ++i) {
-            (sims[i] = new Simulator(args)).run();
+            sims[i] = new Simulator(args);
+            sims[i].securities = securitiesData;
+            sims[i].run();
         }
         for (Simulator s : sims) {
             s.join();

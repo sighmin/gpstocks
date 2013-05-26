@@ -15,6 +15,7 @@ import java.util.HashMap;
 public class Simulator extends Thread {
     
     private String[] args = null;
+    public ArrayList<Security> securities;
 
     public Simulator(String[] args) { this.args = args; }
 
@@ -31,6 +32,7 @@ public class Simulator extends Thread {
         
         // Dispatch
         GP algorithm = new GP(options);
+        algorithm.securities = this.securities;
         algorithm.run();
     }
     
