@@ -6,9 +6,11 @@ package gpfinance.datatypes;
  * @author Simon van Dyk, Stuart Reid
  */
 public class Security {
+    public String ticker;
     public double[] values;
     
-    public Security(double[] values){
+    public Security(String name, double[] values){
         this.values = values;
+        ticker = name;
     }
 }

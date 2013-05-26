@@ -1,5 +1,11 @@
 package gpfinance;
 
+import gpfinance.datatypes.Security;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+
 /**
  * @date 2013-06-01
  * @author Simon van Dyk, Stuart Reid
@@ -36,14 +42,50 @@ public class GPFinance {
     public static void run(String[] args) throws Exception {
         final int numsims = 1;
         Simulator[] sims = new Simulator[numsims];
-        
-        //
-        
+
+        // Read in the data for evaluating the tree
+        ArrayList<Security> securitiesData = new ArrayList();
+        File f = new File("###.txt");
+        String path = f.getAbsolutePath().replaceAll("/###.txt", "") + "/data/Fundamentals/";
+        path = path.replaceAll("/dist", "");
+        f.delete();
+        File folder = new File(path);
+        System.out.println("folder " + folder);
+        File[] listOfFiles = folder.listFiles();
+        for (File file : listOfFiles) {
+            if (file.getName().contains("Fundamental Indicators")) {
+                try {
+                    //Read in the file
+                    FileReader fr = new FileReader(path + file.getName());
+                    BufferedReader br = new BufferedReader(fr);
+                    String tickerSymbol = file.getName().replaceAll(" Fundamental Indicators.csv", "");
+                    double[] indicatorData = new double[42];
+                    String line = br.readLine();
+                    int counter = 0;
+                    while (line != null) {
+                        String[] lineSplit = line.split(",");
+                        indicatorData[counter] = Double.parseDouble(lineSplit[1]);
+                        line = br.readLine();
+                        counter++;
+                    }
+                    Security security = new Security(tickerSymbol, indicatorData);
+                    securitiesData.add(security);
+                } catch (Exception err) {
+                    System.out.println("Error reading in security data " + err);
+                    err.printStackTrace();
+                }
+            }
+        }
+
+        for (Security s : securitiesData) {
+            System.out.println(s.ticker + ": " + s.values.toString());
+        }
+
         // Run
         for (int i = 0; i < numsims; ++i) {
             (sims[i] = new Simulator(args)).run();
         }
-        for (Simulator s:sims) {
+        for (Simulator s : sims) {
             s.join();
         }
     }

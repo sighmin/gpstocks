@@ -164,7 +164,7 @@ public class GP {
             U.m(t);
         } while (t < generations);
         
-        Collections.sort(population,Individual.MaximizeComparator);
+        Collections.sort(population,Individual.MinimizeComparator);
         population.get(0).print();
     }
     

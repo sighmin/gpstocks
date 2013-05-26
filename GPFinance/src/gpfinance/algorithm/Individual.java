@@ -79,7 +79,7 @@ public class Individual {
     }
 
     public void print(){
-        U.m("f(): " + fitness);
+        U.m("f(): " + fitness.getFitness());
         tree.print();
     }
 
