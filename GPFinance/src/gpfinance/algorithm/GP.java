@@ -170,6 +170,7 @@ public class GP {
             //printBest();
         } while (gen < generations);
 
+        U.m("\n\n****************************************  " + "RUN COMPLETE" + "  ****************************************\n\n");
         printBest();
     }
 

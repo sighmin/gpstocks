@@ -53,8 +53,12 @@ public class Individual {
         
         // Fitness calculateReturn(Decision[])
         //decisions[0] == Decision.BUY
+<<<<<<< HEAD
+=======
+        
         // Calculate and save average fitness measures over all securities
         
+>>>>>>> 9a1afad98792a44673140289e3072cfba7a75f9e
         //stub
         //fitness.returnValue = Math.log(tree.size()) + U.rint(4);
     }
