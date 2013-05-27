@@ -25,7 +25,7 @@ public class GP {
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
     private double[] initialMutationRates = {0.5,   0.0,   0.75,      0.85, 0.75,       0.95};
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates =   {0.0,   0.5,   0.1,       0.5,  0.2,        0.8};
+    private double[] finalMutationRates =   {0.0,   0.5,   0.1,       0.5,  0.2,        0.2};
     private double initialCrossoverProb = 0.8;
     private double finalCrossoverProb = 0.6;
     private char analysisType = 'F';
