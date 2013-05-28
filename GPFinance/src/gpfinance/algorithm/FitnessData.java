@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package gpfinance.algorithm;
 
 import gpfinance.datatypes.Decision;
@@ -16,12 +15,13 @@ import java.util.ArrayList;
  */
 public class FitnessData {
 
-    public String fitnessFile;
+    public String[] fitnessFiles = new String[2];
     public int quarter, returnColumn;
     ArrayList<Return> returns;
 
-    FitnessData(String fileName, int q) {
-        fitnessFile = fileName;
+    FitnessData(String[] fileNames, int q) {
+        fitnessFiles[0] = fileNames[0];
+        fitnessFiles[1] = fileNames[1];
         quarter = q;
 
         int[] returnColums = {3, 5, 7, 9};
@@ -32,8 +32,18 @@ public class FitnessData {
     }
 
     private void populateReturns() {
+        // Open the Fitness.csv given 2 possible filepaths
+        FileReader fr = null;
+        for (int i = 0; i < 2; ++i) {
+            try {
+                fr = new FileReader(fitnessFiles[i]);
+            } catch (FileNotFoundException e) {
+                // silently try the second filepath (it will be either in Stuarts path or Simons path)
+            }
+        }
+        
+        // Read in data from the file
         try {
-            FileReader fr = new FileReader(fitnessFile);
             BufferedReader br = new BufferedReader(fr);
 
             String line = br.readLine();
@@ -55,7 +65,7 @@ public class FitnessData {
 
     public double calculateReturn(Decision[] decisions) {
         //System.out.println("L: " + decisions.length);
-        
+
         double calculatedReturn = 0.0;
         int counter = 0;
         for (Return ret : returns) {

@@ -17,8 +17,9 @@ public class Individual {
 
     private DecisionTree tree;
     private Fitness fitness = new Fitness();
-    private static String filePath = "/home/stuart/Documents/GPStocks/GPFinance/data/Fitness.csv";
-    private static FitnessData fitnessData = new FitnessData(filePath, 4);
+    private static final String[] filePath = {"/home/simon/Varsity/AI/assignments/assignment4/GPStocks/GPFinance/data/Fitness.csv", "/home/stuart/Documents/GPStocks/GPFinance/data/Fitness.csv"};
+    private static final int NUM_QUARTERS = 4;
+    private static FitnessData fitnessData = new FitnessData(filePath, NUM_QUARTERS);
 
     public Individual() {
     }
