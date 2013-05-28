@@ -25,10 +25,10 @@ public class GP {
     private int populationSize = 100;
     private ArrayList<Individual> population = new ArrayList(populationSize);
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] initialMutationRates = {0.5,   0.0,   0.75,      0.85, 0.75,       0.95};
+    private double[] initialMutationRates = {0.5,   0.0,   0.9,       0.8,  0.8,        0.9};
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates =   {0.1,   0.3,   0.3,       0.5,  0.3,        0.4};
-    private double initialCrossoverProb = 0.6;
+    private double[] finalMutationRates =   {0.0,   0.5,   0.1,       0.1,  0.1,        0.3};
+    private double initialCrossoverProb = 0.8;
     private double finalCrossoverProb = 0.4;
     private char analysisType = 'F';
     /* Strategy control parameters */
@@ -150,7 +150,6 @@ public class GP {
             if (gen % RESOLUTION == 0){
                 U.m(gen + ":\t" + getBest().getFitness());
             }
-            //printBest();
         } while (gen < generations);
 
         U.m("\n\n****************************************  " + "RUN COMPLETE" + "  ****************************************\n\n");

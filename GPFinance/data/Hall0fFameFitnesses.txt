@@ -2,7 +2,31 @@
 Hall of Fame of the best fitnesses (along with the parameters and strategies)
 ================================================================================
 
-*** (1) ***
+*** () ***
+2000:	17.90104616080656
+Using:
+    /* Control Parameters */
+    private int generations = 2000;
+    private int populationSize = 100;
+    private ArrayList<Individual> population = new ArrayList(populationSize);
+    //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
+    private double[] initialMutationRates = {0.5,   0.0,   0.9,       0.5,  0.9,        0.9};
+    //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
+    private double[] finalMutationRates =   {0.0,   0.5,   0.4,       0.5,  0.2,        0.5};
+    private double initialCrossoverProb = 0.8;
+    private double finalCrossoverProb = 0.0;
+    private char analysisType = 'F';
+    /* Strategy control parameters */
+    private double[] restartRates = {0.4, 0.02};
+    
+    /* Strategies */
+    private InitializationStrategy initializationStrategy = new InitializationStrategy(analysisType);
+    private SelectionStrategy populationSelectionStrategy = new StochasticMuLambdaSelectionStrategy(restartRates); // elitism
+    private SelectionStrategy reproductionSelectionStrategy = new RankBasedSelectionStrategy();
+    private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
+    private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
+
+*** () ***
 2000:	17.85916711410492
 2000:	17.81936062196394
 Using:
@@ -27,28 +51,3 @@ Using:
     private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
     private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
 
-
-
-*** () ***
-2000:	17.634613160544262
-Using:
-    /* Control Parameters */
-    private int generations = 2000;
-    private int populationSize = 100;
-    private ArrayList<Individual> population = new ArrayList(populationSize);
-    //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] initialMutationRates = {0.5,   0.0,   0.75,      0.85, 0.75,       0.95};
-    //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates =   {0.1,   0.3,   0.3,       0.5,  0.3,        0.4};
-    private double initialCrossoverProb = 0.6;
-    private double finalCrossoverProb = 0.4;
-    private char analysisType = 'F';
-    /* Strategy control parameters */
-    private double[] restartRates = {0.2, 0.05};
-    
-    /* Strategies */
-    private InitializationStrategy initializationStrategy = new InitializationStrategy(analysisType);
-    private SelectionStrategy populationSelectionStrategy = new StochasticMuLambdaSelectionStrategy(); // elitism
-    private SelectionStrategy reproductionSelectionStrategy = new RankBasedSelectionStrategy();
-    private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
-    private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
