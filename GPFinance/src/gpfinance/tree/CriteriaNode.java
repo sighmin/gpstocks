@@ -81,7 +81,8 @@ public class CriteriaNode extends Node {
     }
     
     public void gaussValue() {
-        value = value + U.getRandomGauss();
+        value = U.getRangedRandomGauss(indicator);
+        //value = value + U.getRandomGauss();
     }
        
     @Override

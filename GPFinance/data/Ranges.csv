@@ -1,42 +1,42 @@
-Gross Margin % 2009: 7.50,55.32,100.00
-Gross Margin % 2010: 7.60,55.32,100.00
-Gross Margin % YoY % change: -37.50,-0.23,29.15
-Operating Margin % 2009: -18.80,20.31,56.90
-Operating Margin % 2010: -8.70,20.71,59.40
-Operating Margin % YoY % change: -190.00,3.26,160.87
-Earnings Per Share USD 2009: -2.08,2.67,26.31
-Earnings Per Share USD 2010: -0.84,3.29,29.76
-Earnings Per Share USD YoY % change: -210.71,39.45,816.67
-Book Value Per Share USD 2009: 0.18,13.20,143.92
-Book Value Per Share USD 2010: 1.45,15.68,179.52
-Book Value Per Share USD YoY % change: -12.15,35.80,1133.33
-SG&A 2009: 2.69,22.93,63.24
-SG&A 2010: 3.22,22.56,66.95
-SG&A YoY % change: -41.36,-1.58,19.70
-R&D 2009: 0.21,12.74,33.63
-R&D 2010: 0.15,12.72,32.13
-R&D YoY % change: -32.82,4.00,251.00
-Return on Assets % 2009: -14.52,16.54,194.38
-Return on Assets % 2010: -5.77,16.35,157.75
-Return on Assets % YoY % change: -207.10,20.96,862.16
-Return on Equity % 2009: -23.09,25.03,212.98
-Return on Equity % 2010: -10.43,24.82,212.98
-Return on Equity % YoY % change: -203.72,103.68,5151.85
-Return on Invested Capital % 2009: -23.09,13.65,43.14
-Return on Invested Capital % 2010: -10.43,13.74,43.14
-Return on Invested Capital % YoY % change: -160.56,30.30,1145.54
-Cap Ex as a % of Sales 2009: 0.72,14.60,83.08
-Cap Ex as a % of Sales 2010: 1.09,14.72,83.48
-Cap Ex as a % of Sales YoY % change: -80.36,24.50,299.72
-Total Current Assets 2009: 9.08,50.20,93.91
-Total Current Assets 2010: 9.78,49.87,92.82
-Total Current Assets YoY % change: -30.27,1.36,75.94
-Total Current Liabilities 2009: 1.11,20.73,56.62
-Total Current Liabilities 2010: 0.98,20.46,55.80
-Total Current Liabilities YoY % change: -69.39,-3.02,50.36
-Current Ratio 2009: 0.14,2.32,7.92
-Current Ratio 2010: 0.10,2.42,7.56
-Current Ratio YoY % change: -47.89,4.00,214.29
-Quick Ratio 2009: 0.61,1.71,6.65
-Quick Ratio 2010: 0.52,1.83,7.14
-Quick Ratio YoY % change: -47.13,4.19,206.15
+Gross Margin % 2009,7.5,55.32,100,21.34
+Gross Margin % 2010,7.6,55.32,100,21.74
+Gross Margin % YoY % change,-37.5,-0.23,29.15,9.66
+Operating Margin % 2009,-18.8,20.31,56.9,13.02
+Operating Margin % 2010,-8.7,20.71,59.4,12.63
+Operating Margin % YoY % change,-190,3.26,160.87,51.91
+Earnings Per Share USD 2009,-2.08,2.67,26.31,4.23
+Earnings Per Share USD 2010,-0.84,3.29,29.76,5.34
+Earnings Per Share USD YoY % change,-210.71,39.45,816.67,125.08
+Book Value Per Share USD 2009,0.18,13.2,143.92,19.16
+Book Value Per Share USD 2010,1.45,15.68,179.52,24.44
+Book Value Per Share USD YoY % change,-12.15,35.8,1133.33,144.35
+SG&A 2009,2.69,22.93,63.24,13.87
+SG&A 2010,3.22,22.56,66.95,14
+SG&A YoY % change,-41.36,-1.58,19.7,10.36
+R&D 2009,0.21,12.74,33.63,7.1
+R&D 2010,0.15,12.72,32.13,6.85
+R&D YoY % change,-32.82,4,251,34.51
+Return on Assets % 2009,-14.52,16.54,194.38,25.73
+Return on Assets % 2010,-5.77,16.35,157.75,21.3
+Return on Assets % YoY % change,-207.1,20.96,862.16,127.67
+Return on Equity % 2009,-23.09,25.03,212.98,30.41
+Return on Equity % 2010,-10.43,24.82,212.98,28.39
+Return on Equity % YoY % change,-203.72,103.68,5151.85,669.44
+Return on Invested Capital % 2009,-23.09,13.65,43.14,12.04
+Return on Invested Capital % 2010,-10.43,13.74,43.14,10.34
+Return on Invested Capital % YoY % change,-160.56,30.3,1145.54,166.3
+Cap Ex as a % of Sales 2009,0.72,14.6,83.08,22.52
+Cap Ex as a % of Sales 2010,1.09,14.72,83.48,21.66
+Cap Ex as a % of Sales YoY % change,-80.36,24.5,299.72,57.82
+Total Current Assets 2009,9.08,50.2,93.91,19.09
+Total Current Assets 2010,9.78,49.87,92.82,19.22
+Total Current Assets YoY % change,-30.27,1.36,75.94,17.43
+Total Current Liabilities 2009,1.11,20.73,56.62,13.3
+Total Current Liabilities 2010,0.98,20.46,55.8,14.24
+Total Current Liabilities YoY % change,-69.39,-3.02,50.36,20.24
+Current Ratio 2009,0.14,2.32,7.92,1.38
+Current Ratio 2010,0.1,2.42,7.56,1.66
+Current Ratio YoY % change,-47.89,4,214.29,38.02
+Quick Ratio 2009,0.61,1.71,6.65,1.15
+Quick Ratio 2010,0.52,1.83,7.14,1.45
+Quick Ratio YoY % change,-47.13,4.19,206.15,37.03

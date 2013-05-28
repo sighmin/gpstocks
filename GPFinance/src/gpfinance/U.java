@@ -1,6 +1,7 @@
 
 package gpfinance;
 
+import gpfinance.datatypes.Indicator;
 import java.util.Random;
 
 /**
@@ -93,4 +94,27 @@ public class U {
         return (random.nextGaussian() * 50);
     }
 
+    public static double getRangedRandomGauss(Indicator indicator) {
+
+        double returnValue = 0.0;
+        double[] means = {55.32, 55.32, -0.23, 20.31, 20.71, 3.26, 2.67, 3.29,
+            39.45, 13.2, 15.68, 35.8, 22.93, 22.56, -1.58, 12.74, 12.72, 4, 16.54,
+            16.35, 20.96, 25.03, 24.82, 103.68, 13.65, 13.74, 30.3, 14.6, 14.75,
+            24.5, 50.2, 49.87, 1.36, 20.73, 20.46, -3.02, 2.32, 2.42, 4, 1.71, 1.83,
+            4.19};
+        double[] stddevs = {21.34, 21.74, 9.66, 13.02, 12.63, 51.91, 4.23, 5.34,
+            125.08, 19.16, 24.44, 144.35, 13.87, 14, 10.36, 7.1, 6.85, 34.51,
+            25.73, 21.3, 127.67, 30.41, 28.39, 669.44, 12.04, 10.34, 166.3, 22.52,
+            21.66, 57.82, 19.09, 19.22, 17.43, 13.3, 14.24, 20.24, 1.38, 1.66,
+            38.02, 1.15, 1.45, 37.03};
+
+        for (int i = 0; i < means.length; i++) {
+            if (indicator.getCode() == i) {
+                returnValue = (random.nextGaussian() * stddevs[i]) + means[i];
+            }
+        }
+
+       // System.out.println(indicator.getLabel() + "," + returnValue);
+        return returnValue;
+    }
 }

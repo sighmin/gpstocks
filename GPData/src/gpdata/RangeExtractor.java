@@ -47,6 +47,9 @@ public class RangeExtractor extends Extractor {
                     counter++;
                 }
             }
+            for (Range range : ranges) {
+                range.setMean(range.getMean() / 61);
+            }
             //For each indicator
             for (int i = 0; i < ranges.size(); i++) {
                 double sumOfDiffs = 0.0;
@@ -63,29 +66,28 @@ public class RangeExtractor extends Extractor {
                             double value = Double.parseDouble(line.split(",")[1]);
                             sumOfDiffs += Math.pow((value - mean), 2.0);
                             DecimalFormat df = new DecimalFormat("#0.00");
-                            System.out.print(df.format(sumOfDiffs) + ",");
+                            //System.out.print("V: " + value + "M: "+ mean + " ,"+Math.pow((value - mean), 2.0));
                             //If you have processed all files update value for indicator
                             if (j == files.length - 1) {
                                 //System.out.println("equal");
                                 double valToSqrt = sumOfDiffs /  j;
                                 double calculation = (double)Math.sqrt(valToSqrt);
                                 ranges.get(i).setStdev(calculation);
-                                System.out.print("\ncalc: " + calculation + " val: "+valToSqrt);
+                                //System.out.print("\ncalc: " + calculation + " val: "+valToSqrt);
                             }
                         }
                         line = br.readLine();
                         countLines++;
                     }
                 }
-                System.out.println("");
+                //System.out.println("");
             }
             for (Range range : ranges) {
                 DecimalFormat df = new DecimalFormat("#0.00");
-                range.setMean(range.getMean() / 61);
-                System.out.println(range.indicatorName + ": "
-                        + df.format(range.minimum) + "\t,"
-                        + df.format(range.mean) + "\t,"
-                        + df.format(range.maximum) + "\t,"
+                System.out.println(range.indicatorName + ","
+                        + df.format(range.minimum) + ","
+                        + df.format(range.mean) + ","
+                        + df.format(range.maximum) + ","
                         + df.format(range.stdev));
             }
         } catch (Exception ex) {
