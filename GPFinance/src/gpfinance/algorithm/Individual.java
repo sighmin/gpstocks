@@ -1,6 +1,7 @@
 
 package gpfinance.algorithm;
 
+import gpfinance.datatypes.FitnessData;
 import gpfinance.U;
 import gpfinance.datatypes.Decision;
 import gpfinance.datatypes.Fitness;

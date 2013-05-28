@@ -1,5 +1,12 @@
 package gpfinance.algorithm;
 
+import gpfinance.algorithm.strategies.InitializationStrategy;
+import gpfinance.algorithm.strategies.RankBasedSelectionStrategy;
+import gpfinance.algorithm.strategies.RandomSelectionStrategy;
+import gpfinance.algorithm.strategies.StochasticMuLambdaSelectionStrategy;
+import gpfinance.algorithm.strategies.TreeMutationStrategy;
+import gpfinance.algorithm.strategies.MuLambdaSelectionStrategy;
+import gpfinance.algorithm.strategies.SexualCrossoverStrategy;
 import gpfinance.U;
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import gpfinance.algorithm.interfaces.MutationStrategy;

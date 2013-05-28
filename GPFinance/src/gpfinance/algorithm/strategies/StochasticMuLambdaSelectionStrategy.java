@@ -1,7 +1,8 @@
 
-package gpfinance.algorithm;
+package gpfinance.algorithm.strategies;
 
 import gpfinance.U;
+import gpfinance.algorithm.Individual;
 import java.util.ArrayList;
 import java.util.Collections;
 

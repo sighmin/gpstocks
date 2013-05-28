@@ -1,6 +1,7 @@
-package gpfinance.algorithm;
+package gpfinance.algorithm.strategies;
 
 import gpfinance.U;
+import gpfinance.algorithm.Individual;
 import gpfinance.algorithm.interfaces.MutationStrategy;
 import java.util.ArrayList;
 

@@ -1,25 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package gpfinance.algorithm;
+
+package gpfinance.datatypes;
 
 import gpfinance.datatypes.Decision;
 import java.io.*;
 import java.util.ArrayList;
 
 /**
- *
- * @author stuart
+ * @date 2013-06-01
+ * @author Simon van Dyk, Stuart Reid
  */
 public class FitnessData {
 
     public String[] fitnessFiles = new String[2];
     public int quarter, returnColumn;
-    ArrayList<Return> returns;
+    public ArrayList<Return> returns;
 
-    FitnessData(String[] fileNames, int q) {
+    public FitnessData(String[] fileNames, int q) {
         fitnessFiles[0] = fileNames[0];
         fitnessFiles[1] = fileNames[1];
         quarter = q;
@@ -57,7 +53,8 @@ public class FitnessData {
             }
 
             br.close();
-            fr.close();
+            if (fr != null)
+                fr.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
