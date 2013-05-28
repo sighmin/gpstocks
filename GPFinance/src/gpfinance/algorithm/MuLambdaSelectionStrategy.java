@@ -32,4 +32,9 @@ public class MuLambdaSelectionStrategy implements SelectionStrategy {
     public MuLambdaSelectionStrategy clone(){
         return new MuLambdaSelectionStrategy();
     }
+
+    @Override
+    public ArrayList<Individual> selectDynamic(ArrayList<Individual> pool, int selectionSize, double progress) {
+        return select(pool, selectionSize);
+    }
 }
