@@ -19,7 +19,7 @@ public class GP {
 
     private static final int numMutations = 6;
     /* Control Parameters */
-    private int generations = 500;
+    private int generations = 650;
     private int populationSize = 50;
     private ArrayList<Individual> population = new ArrayList(populationSize);
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
