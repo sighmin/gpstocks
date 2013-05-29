@@ -1,7 +1,8 @@
 
-package gpfinance.algorithm;
+package gpfinance.algorithm.strategies;
 
 import gpfinance.U;
+import gpfinance.algorithm.Individual;
 import gpfinance.algorithm.interfaces.CrossoverStrategy;
 import gpfinance.tree.Node;
 import java.util.ArrayList;

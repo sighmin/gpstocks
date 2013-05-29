@@ -28,8 +28,13 @@ public class GP {
     private static final int RESOLUTION = 50;
             
     /* Control Parameters */
+<<<<<<< HEAD
+    private int generations = 650;
+    private int populationSize = 50;
+=======
     private int generations = 2000;
     private int populationSize = 100;
+>>>>>>> 75dfb28ac0a78677dae2c309f4a8f6d1469786f3
     private ArrayList<Individual> population = new ArrayList(populationSize);
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
     private double[] initialMutationRates = {0.5,   0.0,   0.9,       0.8,  0.8,        0.9};

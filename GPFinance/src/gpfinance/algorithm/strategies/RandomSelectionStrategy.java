@@ -1,6 +1,7 @@
 
-package gpfinance.algorithm;
+package gpfinance.algorithm.strategies;
 
+import gpfinance.algorithm.Individual;
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,12 +17,11 @@ public class RandomSelectionStrategy implements SelectionStrategy {
     @Override
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize){
         ArrayList<Individual> selected = new ArrayList();
-        ArrayList<Individual> poolCopy = new ArrayList(pool.subList(0, pool.size()-1));
         
         Random random = new Random();
         for (int i = 0; i < selectionSize; ++i){
-            int r = random.nextInt(poolCopy.size());
-            selected.add(poolCopy.remove(r).clone());
+            int r = random.nextInt(pool.size());
+            selected.add(pool.get(r).clone());
         }
         
         return selected;
@@ -30,5 +30,10 @@ public class RandomSelectionStrategy implements SelectionStrategy {
     @Override
     public RandomSelectionStrategy clone(){
         return new RandomSelectionStrategy();
+    }
+
+    @Override
+    public ArrayList<Individual> selectDynamic(ArrayList<Individual> pool, int selectionSize, double progress) {
+        return select(pool, selectionSize);
     }
 }

@@ -11,4 +11,5 @@ import java.util.ArrayList;
 public interface SelectionStrategy {
     public SelectionStrategy clone();
     public ArrayList<Individual> select(ArrayList<Individual> pool, int selectionSize);
+    public ArrayList<Individual> selectDynamic(ArrayList<Individual> pool, int selectionSize, double progress);
 }

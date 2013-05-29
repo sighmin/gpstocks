@@ -1,6 +1,7 @@
 
-package gpfinance.algorithm;
+package gpfinance.algorithm.strategies;
 
+import gpfinance.algorithm.Individual;
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,5 +32,10 @@ public class MuLambdaSelectionStrategy implements SelectionStrategy {
     @Override
     public MuLambdaSelectionStrategy clone(){
         return new MuLambdaSelectionStrategy();
+    }
+
+    @Override
+    public ArrayList<Individual> selectDynamic(ArrayList<Individual> pool, int selectionSize, double progress) {
+        return select(pool, selectionSize);
     }
 }
