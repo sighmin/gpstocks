@@ -42,7 +42,7 @@ public class GP {
     private InitializationStrategy initializationStrategy = new InitializationStrategy(analysisType);
     private SelectionStrategy populationSelectionStrategy = new StochasticMuLambdaSelectionStrategy(restartRates); // elitism
     private SelectionStrategy reproductionSelectionStrategy = new RankBasedSelectionStrategy();
-    private CrossoverStrategy crossoverStrategy = new SexualRootCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
+    private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
     private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
 
     // generate constructors once all instance variables defined
@@ -178,7 +178,7 @@ public class GP {
             previousPopulation.addAll(mutationOffspring);
             population = populationSelectionStrategy.selectDynamic(previousPopulation, populationSize, progress);
 
-            // Advance to next generation
+            // Advance to next generation & print measurements
             if (gen % RESOLUTION == 0){
                 printMeasurements(gen);
             }
@@ -255,6 +255,6 @@ public class GP {
                 U.m(finalMutationRates[i]);
             }
         }
-        U.m("#########################################################");
+        U.m("######################################################### ");
     }
 }
