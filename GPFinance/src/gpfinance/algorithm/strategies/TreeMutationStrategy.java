@@ -71,7 +71,7 @@ public class TreeMutationStrategy implements MutationStrategy {
                     }
                     // other mutation rates
                 } else {
-                    if (r < (rates[j] / 2.0)) { // necessary so mutation isn't too large a change on the tree
+                    if (r < (rates[j])) { // necessary so mutation isn't too large a change on the tree
                         switch (j) {
                             case 2:
                                 individual.mutateNonLeaf();

@@ -22,11 +22,9 @@ public class Individual {
     private Fitness fitness = new Fitness();
     
     // Static data
-    public static int QUARTER = 3;
-    public static double SIZE_CONTRIBUTION = 0.5;
-    private static boolean CONSIDER_SIZE = true;
-    private static final String[] filePath = {"/home/simon/Varsity/AI/assignments/assignment4/GPStocks/GPFinance/data/Fitness.csv", "/home/stuart/Documents/GPStocks/GPFinance/data/Fitness.csv"};
-    private static FitnessData fitnessData = new FitnessData(filePath, QUARTER);
+    public static boolean CONSIDER_SIZE = true;
+    public static double SIZE_CONTRIBUTION;
+    public static FitnessData fitnessData;
 
     public Individual() {
     }

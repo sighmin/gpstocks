@@ -11,6 +11,7 @@ import gpfinance.U;
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import gpfinance.algorithm.interfaces.MutationStrategy;
 import gpfinance.algorithm.interfaces.CrossoverStrategy;
+import gpfinance.datatypes.FitnessData;
 import gpfinance.datatypes.Indicator;
 import gpfinance.datatypes.Security;
 import java.util.ArrayList;
@@ -25,30 +26,32 @@ public class GP {
     /* Financial Data */
     public static ArrayList<Security> securities = new ArrayList();
 
+    /* Miscellaneous configuration */
     private static final int NUM_MUTATIONS = 6;
     private static final int RESOLUTION = 5;
     private static final String DELIMETER = "|";
-    private static final int QUARTER_NUM = 3;
-    private static final double SIZE_CONTRIBUTION = 0.5;
+    private static final int QUARTER_NUM = 1;
+    private static final double SIZE_CONTRIBUTION = 0.2;
+    private static final String[] FILE_PATH = {"/home/simon/Varsity/AI/assignments/assignment4/GPStocks/GPFinance/data/Fitness.csv", "/home/stuart/Documents/GPStocks/GPFinance/data/Fitness.csv"};
             
     /* Control Parameters */
-    private int generations = 1000;
+    private char analysisType = 'F';
+    private int generations = 2000;
     private int populationSize = 100;
     private ArrayList<Individual> population = new ArrayList(populationSize);
+    /* Strategy control parameters */
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
     private double[] initialMutationRates = {0.9,   0.0,   0.6,       0.5,  0.6,        0.9};
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates =   {0.4,   0.4,   0.1,       0.1,  0.1,        0.3};
+    private double[] finalMutationRates =   {0.4,   0.4,   0.1,       0.1,  0.1,        0.4};
     private double initialCrossoverProb = 0.75;
-    private double finalCrossoverProb = 0.2;
-    private char analysisType = 'F';
-    /* Strategy control parameters */
+    private double finalCrossoverProb = 0.25;
     private double[] restartRates = {0.6, 0.02};
     
     /* Strategies */
     private InitializationStrategy initializationStrategy = new InitializationStrategy(analysisType);
     private SelectionStrategy populationSelectionStrategy = new StochasticMuLambdaSelectionStrategy(restartRates); // elitism
-    private SelectionStrategy reproductionSelectionStrategy = new RandomSelectionStrategy();
+    private SelectionStrategy reproductionSelectionStrategy = new RankBasedSelectionStrategy();
     private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
     private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
 
@@ -123,11 +126,11 @@ public class GP {
     }
 
     public void run() {
-        // Initialize population
-        Individual.QUARTER = QUARTER_NUM;
+        // Initialize population & financial data
         Individual.SIZE_CONTRIBUTION = SIZE_CONTRIBUTION;
+        Individual.fitnessData = new FitnessData(FILE_PATH, QUARTER_NUM);
         initializationStrategy.init(population, populationSize);
-
+        
         // For each generation
         int gen = 0;
         do {
@@ -154,16 +157,17 @@ public class GP {
             ArrayList<Individual> mutationOffspring = mutationStrategy.mutate(crossoverOffspring, progress);
             measurePopulation(mutationOffspring, gen);
             
-            // Select P(t+1) from union of offspring: P U P'' -- should we select from P U P' U P''
-            previousPopulation.addAll(mutationOffspring);  //crossed over and mutated
+            // Select P(t+1) from union of offspring: P U P'' -- should we select from P U P' U P'' ?
+            previousPopulation.addAll(mutationOffspring);
             population = populationSelectionStrategy.selectDynamic(previousPopulation, populationSize, progress);
 
             // Advance to next generation
-            ++gen;
             if (gen % RESOLUTION == 0){
                 printMeasurements(gen);
             }
+            ++gen;
         } while (gen < generations);
+        printMeasurements(gen);
 
         //U.m("\n\n****************************************  " + "RUN COMPLETE" + "  ****************************************\n\n");
         //printBestIndividual();

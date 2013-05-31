@@ -1,7 +1,6 @@
 
 package gpfinance.datatypes;
 
-import gpfinance.datatypes.Decision;
 import java.io.*;
 import java.util.ArrayList;
 
