@@ -48,7 +48,7 @@ public class GPFinance {
         path = path.replaceAll("/dist", "");
         f.delete();
         File folder = new File(path);
-        System.out.println("folder " + folder);
+        //System.out.println("folder " + folder);
         File[] listOfFiles = folder.listFiles();
         for (File file : listOfFiles) {
             if (file.getName().contains("Fundamental Indicators")) {
@@ -118,6 +118,8 @@ public class GPFinance {
                 + "fundamental or technical indicators, given a quartly evaluation period."
                 + "\n\n"
                 + "  OPTIONS\n"
+                + "      financialQuarter=[1|2|3|4]\n"
+                + "          Sets the evaluation time period of the buys/shorts.\n"
                 + "      type=[fundamental|technical]\n"
                 + "          Develops decision tree using fundametal indicators.\n"
                 + "          Develops decision tree using technical indicators.\n"
@@ -127,14 +129,18 @@ public class GPFinance {
                 + "          The number of individuals in the population.\n"
                 + "      crossoverRate=<number>:<number>\n"
                 + "          The initial and final crossover rate, changes linearly.\n"
+                + "      restartSelectionRate=<number>:<number>\n"
+                + "          The initial and final restart rates of stochastic mulambda selection.\n"
                 + "      mutationRateStart=<number>:<number>:<number>:<number>:<number>:<number>\n"
                 + "          Set of initial mutation rates for types grow, trunc, indicator, decision, inequality and gauss.\n"
                 + "      mutationRateEnd=<number>:<number>:<number>:<number>:<number>:<number>\n"
                 + "          Set of final mutation rates of the same type as above.\n"
-                + "      populationSelection=[mulambda|rankbased|random]\n"
+                + "      populationSelection=[smulambda|mulambda|rankbased|random]\n"
                 + "          Sets the next population selection strategy.\n"
-                + "      reproductionSelection=[rankbased|mulambda|random]\n"
+                + "      reproductionSelection=[rankbased|smulambda|mulambda|random]\n"
                 + "          Sets the reproduction selection strategy.\n"
+                + "      crossoverStrategy=[sexualRandOnePoint|sexualOnePoint]\n"
+                + "          Sets the crossover strategy.\n"
                 + "  TEST_OPTIONS\n"
                 + "      all\n"
                 + "          Runs all the tests. This option is particularly verbose.\n"

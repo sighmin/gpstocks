@@ -45,6 +45,10 @@ public class U {
     public static void m(Object o) {
         System.out.println(o);
     }
+    
+    public static void mnl(Object o) {
+        System.out.print(o);
+    }
 
     /**
      * Set of methods to help with random generation of data types. chance() -

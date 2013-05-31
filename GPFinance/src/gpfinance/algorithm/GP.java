@@ -1,19 +1,9 @@
 package gpfinance.algorithm;
 
-import gpfinance.algorithm.strategies.InitializationStrategy;
-import gpfinance.algorithm.strategies.RankBasedSelectionStrategy;
-import gpfinance.algorithm.strategies.RandomSelectionStrategy;
-import gpfinance.algorithm.strategies.StochasticMuLambdaSelectionStrategy;
-import gpfinance.algorithm.strategies.TreeMutationStrategy;
-import gpfinance.algorithm.strategies.MuLambdaSelectionStrategy;
-import gpfinance.algorithm.strategies.SexualCrossoverStrategy;
+import gpfinance.algorithm.strategies.*;
+import gpfinance.algorithm.interfaces.*;
+import gpfinance.datatypes.*;
 import gpfinance.U;
-import gpfinance.algorithm.interfaces.SelectionStrategy;
-import gpfinance.algorithm.interfaces.MutationStrategy;
-import gpfinance.algorithm.interfaces.CrossoverStrategy;
-import gpfinance.datatypes.FitnessData;
-import gpfinance.datatypes.Indicator;
-import gpfinance.datatypes.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,10 +20,10 @@ public class GP {
     private static final int NUM_MUTATIONS = 6;
     private static final int RESOLUTION = 5;
     private static final String DELIMETER = "|";
-    private static final int QUARTER_NUM = 1;
+    private static int QUARTER_NUM = 3;
     private static final double SIZE_CONTRIBUTION = 0.2;
     private static final String[] FILE_PATH = {"/home/simon/Varsity/AI/assignments/assignment4/GPStocks/GPFinance/data/Fitness.csv", "/home/stuart/Documents/GPStocks/GPFinance/data/Fitness.csv"};
-            
+    
     /* Control Parameters */
     private char analysisType = 'F';
     private int generations = 2000;
@@ -52,7 +42,7 @@ public class GP {
     private InitializationStrategy initializationStrategy = new InitializationStrategy(analysisType);
     private SelectionStrategy populationSelectionStrategy = new StochasticMuLambdaSelectionStrategy(restartRates); // elitism
     private SelectionStrategy reproductionSelectionStrategy = new RankBasedSelectionStrategy();
-    private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
+    private CrossoverStrategy crossoverStrategy = new SexualRootCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
     private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
 
     // generate constructors once all instance variables defined
@@ -60,8 +50,12 @@ public class GP {
 
     public GP(HashMap options) {
         // Set class values if they exist in the hash
+        if (options.containsKey("financialQuarter")){
+            this.QUARTER_NUM = Integer.parseInt((String) options.get("financialQuarter"));
+        }
         if (options.containsKey("type")) {
-            this.analysisType = (options.get("type") == "fundamental") ? 'F' : 'T';
+            String s = (String) options.get("type");
+            this.analysisType = (options.get("type").equals("fundamental")) ? 'F' : 'T';
         }
         if (options.containsKey("generations")) {
             this.generations = Integer.parseInt((String) options.get("generations"));
@@ -78,20 +72,29 @@ public class GP {
             String[] rates = ((String) options.get("mutationRateStart")).split(":");
             this.initialMutationRates = new double[NUM_MUTATIONS];
             for (int i = 0; i < rates.length; ++i) {
-                initialMutationRates[i] = Double.parseDouble(rates[i]);
+                this.initialMutationRates[i] = Double.parseDouble(rates[i]);
             }
         }
         if (options.containsKey("mutationRateEnd")) {
             String[] rates = ((String) options.get("mutationRateEnd")).split(":");
             this.finalMutationRates = new double[NUM_MUTATIONS];
             for (int i = 0; i < rates.length; ++i) {
-                finalMutationRates[i] = Double.parseDouble(rates[i]);
+                this.finalMutationRates[i] = Double.parseDouble(rates[i]);
             }
+        }
+        if (options.containsKey("restartRates")) {
+            String[] rates = ((String) options.get("restartRates")).split(":");
+            this.restartRates = new double[2];
+            this.restartRates[0] = Double.parseDouble(rates[0]);
+            this.restartRates[1] = Double.parseDouble(rates[1]);
         }
         // Set class strategies if they exist in the hash
         if (options.containsKey("populationSelection")) {
             String tmp = ((String) options.get("populationSelection"));
             switch (tmp) {
+                case "smulambda":
+                    this.populationSelectionStrategy = new StochasticMuLambdaSelectionStrategy(restartRates);
+                    break;
                 case "mulambda":
                     this.populationSelectionStrategy = new MuLambdaSelectionStrategy();
                     break;
@@ -106,14 +109,28 @@ public class GP {
         if (options.containsKey("reproductionSelection")) {
             String tmp = ((String) options.get("reproductionSelection"));
             switch (tmp) {
+                case "smulambda":
+                    this.reproductionSelectionStrategy = new StochasticMuLambdaSelectionStrategy(restartRates);
+                    break;
                 case "rankbased":
-                    this.populationSelectionStrategy = new RankBasedSelectionStrategy();
+                    this.reproductionSelectionStrategy = new RankBasedSelectionStrategy();
                     break;
                 case "mulambda":
-                    this.populationSelectionStrategy = new MuLambdaSelectionStrategy();
+                    this.reproductionSelectionStrategy = new MuLambdaSelectionStrategy();
                     break;
                 default:
-                    this.populationSelectionStrategy = new RandomSelectionStrategy();
+                    this.reproductionSelectionStrategy = new RandomSelectionStrategy();
+                    break;
+            }
+        }
+        if (options.containsKey("crossoverStrategy")){
+            String tmp = ((String) options.get("crossoverStrategy"));
+            switch (tmp) {
+                case "sexualRandOnePointCrossover":
+                    this.crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
+                    break;
+                case "sexualOnePointCrossover":
+                    this.crossoverStrategy = new SexualRootCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
                     break;
             }
         }
@@ -121,7 +138,6 @@ public class GP {
         // Create the rest of the variables and strategies
         population = new ArrayList(populationSize);
         initializationStrategy = new InitializationStrategy(analysisType);
-        crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
         mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
     }
 
@@ -130,6 +146,7 @@ public class GP {
         Individual.SIZE_CONTRIBUTION = SIZE_CONTRIBUTION;
         Individual.fitnessData = new FitnessData(FILE_PATH, QUARTER_NUM);
         initializationStrategy.init(population, populationSize);
+        printParameters();
         
         // For each generation
         int gen = 0;
@@ -210,5 +227,34 @@ public class GP {
             U.p(i.getFitness() + ", ");
         }
         U.pl();
+    }
+
+    private void printParameters() {
+        U.m("#########################################################");
+        U.m("# Algorithm Parameters #");
+        U.m("# Generations = " + generations);
+        U.m("# Population size = " + populationSize);
+        U.m("# Resolution = " + RESOLUTION);
+        U.m("#########################################################");
+        U.m("# Financial Parameters #");
+        U.m("# Quarter = " + QUARTER_NUM);
+        U.m("# Crossover probabilities = " + initialCrossoverProb + " -> " + finalCrossoverProb);
+        U.mnl("# Mutation start probabilities = ");
+        for (int i = 0; i < initialMutationRates.length; ++i) {
+            if (i != initialMutationRates.length-1){
+                U.mnl(initialMutationRates[i] + ",");
+            } else {
+                U.m(initialMutationRates[i]);
+            }
+        }
+        U.mnl("# Mutation end probabilities = ");
+        for (int i = 0; i < finalMutationRates.length; ++i) {
+            if (i != finalMutationRates.length-1){
+                U.mnl(finalMutationRates[i] + ",");
+            } else {
+                U.m(finalMutationRates[i]);
+            }
+        }
+        U.m("#########################################################");
     }
 }
