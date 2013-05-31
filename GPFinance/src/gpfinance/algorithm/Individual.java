@@ -5,6 +5,7 @@ import gpfinance.datatypes.FitnessData;
 import gpfinance.U;
 import gpfinance.datatypes.Decision;
 import gpfinance.datatypes.Fitness;
+import gpfinance.datatypes.Indicator;
 import gpfinance.datatypes.Security;
 import gpfinance.tree.DecisionTree;
 import java.util.ArrayList;
@@ -16,11 +17,16 @@ import java.util.Comparator;
  */
 public class Individual {
 
+    // Chromosome & 'cached' fitness calculation
     private DecisionTree tree;
     private Fitness fitness = new Fitness();
+    
+    // Static data
+    public static int QUARTER = 3;
+    public static double SIZE_CONTRIBUTION = 0.5;
+    private static boolean CONSIDER_SIZE = true;
     private static final String[] filePath = {"/home/simon/Varsity/AI/assignments/assignment4/GPStocks/GPFinance/data/Fitness.csv", "/home/stuart/Documents/GPStocks/GPFinance/data/Fitness.csv"};
-    private static final int NUM_QUARTERS = 4;
-    private static FitnessData fitnessData = new FitnessData(filePath, NUM_QUARTERS);
+    private static FitnessData fitnessData = new FitnessData(filePath, QUARTER);
 
     public Individual() {
     }
@@ -48,28 +54,34 @@ public class Individual {
     }
 
     public void measure(int generation, ArrayList<Security> securities) {
-        // Decision[] evaluate() and create list of decisions
         Decision[] decisions = tree.evaluate(securities);
         //System.out.println(decisions);
+        
+        // Set fitness measures
         fitness.returnValue = fitnessData.calculateReturn(decisions);
-        
-        // Fitness calculateReturn(Decision[])
-        //decisions[0] == Decision.BUY
-        // Calculate and save average fitness measures over all securities
-        
-        //stub
-        //fitness.returnValue = Math.log(tree.size()) + U.rint(4);
     }
 
     public double getFitness() {
         return this.fitness.getFitness();
     }
 
+    public double getHeterogeneity() {
+        return tree.heterogeneity();
+    }
+    
+    public Indicator getMostOccuringIndicator(){
+        return tree.getMostOccuringIndicator();
+    }
+
+    public DecisionTree getTree() {
+        return tree;
+    }
+
     public static Comparator<Individual> AscendingFitness = new Comparator<Individual>() {
         @Override
         public int compare(Individual o1, Individual o2) {
-            Double d1 = o1.fitness.getFitness();
-            Double d2 = o2.fitness.getFitness();
+            Double d1 = o1.fitness.getFitness() + (CONSIDER_SIZE ? (Individual.SIZE_CONTRIBUTION / o1.getTree().size()) : 0);
+            Double d2 = o2.fitness.getFitness() + (CONSIDER_SIZE ? (Individual.SIZE_CONTRIBUTION / o2.getTree().size()) : 0);
             return d1.compareTo(d2);
         }
     };
@@ -77,21 +89,20 @@ public class Individual {
     public static Comparator<Individual> DescendingFitness = new Comparator<Individual>() {
         @Override
         public int compare(Individual o1, Individual o2) {
-            Double d1 = o1.fitness.getFitness();
-            Double d2 = o2.fitness.getFitness();
+            Double d1 = o1.fitness.getFitness() + (CONSIDER_SIZE ? (Individual.SIZE_CONTRIBUTION / o1.getTree().size()) : 0);
+            Double d2 = o2.fitness.getFitness() + (CONSIDER_SIZE ? (Individual.SIZE_CONTRIBUTION / o2.getTree().size()) : 0);
             return d2.compareTo(d1);
         }
     };
-
-    public DecisionTree getTree() {
-        return tree;
-    }
 
     public void print() {
         U.m("f() = " + fitness.getFitness());
         tree.print();
     }
-
+    
+    public int size() {
+        return tree.size();
+    }
     /*
      * Mutation methods, delegate to tree. 
      */

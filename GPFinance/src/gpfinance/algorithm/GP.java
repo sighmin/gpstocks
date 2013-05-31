@@ -11,6 +11,7 @@ import gpfinance.U;
 import gpfinance.algorithm.interfaces.SelectionStrategy;
 import gpfinance.algorithm.interfaces.MutationStrategy;
 import gpfinance.algorithm.interfaces.CrossoverStrategy;
+import gpfinance.datatypes.Indicator;
 import gpfinance.datatypes.Security;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,26 +26,29 @@ public class GP {
     public static ArrayList<Security> securities = new ArrayList();
 
     private static final int NUM_MUTATIONS = 6;
-    private static final int RESOLUTION = 50;
+    private static final int RESOLUTION = 5;
+    private static final String DELIMETER = "|";
+    private static final int QUARTER_NUM = 3;
+    private static final double SIZE_CONTRIBUTION = 0.5;
             
     /* Control Parameters */
-    private int generations = 2000;
+    private int generations = 1000;
     private int populationSize = 100;
     private ArrayList<Individual> population = new ArrayList(populationSize);
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] initialMutationRates = {0.5,   0.0,   0.9,       0.8,  0.8,        0.9};
+    private double[] initialMutationRates = {0.9,   0.0,   0.6,       0.5,  0.6,        0.9};
     //                                      {grow,  trunc, indicator, leaf, inequality, gauss}
-    private double[] finalMutationRates =   {0.0,   0.5,   0.1,       0.1,  0.1,        0.3};
-    private double initialCrossoverProb = 0.8;
-    private double finalCrossoverProb = 0.4;
+    private double[] finalMutationRates =   {0.4,   0.4,   0.1,       0.1,  0.1,        0.3};
+    private double initialCrossoverProb = 0.75;
+    private double finalCrossoverProb = 0.2;
     private char analysisType = 'F';
     /* Strategy control parameters */
-    private double[] restartRates = {0.4, 0.02};
+    private double[] restartRates = {0.6, 0.02};
     
     /* Strategies */
     private InitializationStrategy initializationStrategy = new InitializationStrategy(analysisType);
     private SelectionStrategy populationSelectionStrategy = new StochasticMuLambdaSelectionStrategy(restartRates); // elitism
-    private SelectionStrategy reproductionSelectionStrategy = new RankBasedSelectionStrategy();
+    private SelectionStrategy reproductionSelectionStrategy = new RandomSelectionStrategy();
     private CrossoverStrategy crossoverStrategy = new SexualCrossoverStrategy(initialCrossoverProb, finalCrossoverProb);
     private MutationStrategy mutationStrategy = new TreeMutationStrategy(initialMutationRates, finalMutationRates);
 
@@ -120,13 +124,17 @@ public class GP {
 
     public void run() {
         // Initialize population
+        Individual.QUARTER = QUARTER_NUM;
+        Individual.SIZE_CONTRIBUTION = SIZE_CONTRIBUTION;
         initializationStrategy.init(population, populationSize);
 
         // For each generation
         int gen = 0;
         do {
+            double progress = ((double) gen / (double) generations);
+            
             // Measure individuals
-            measure(population, gen);
+            measurePopulation(population, gen);
 
             // Clone previous generation P
             ArrayList<Individual> previousPopulation = new ArrayList();
@@ -139,43 +147,57 @@ public class GP {
             ArrayList<Individual> candidatePopulation = reproductionSelectionStrategy.select(population, population.size() / 2);
 
             // Reproduction producing P'
-            double progress = ((double) gen / (double) generations);
             ArrayList<Individual> crossoverOffspring = crossoverStrategy.crossover(candidatePopulation, progress);
-            measure(crossoverOffspring, gen);
+            measurePopulation(crossoverOffspring, gen);
 
             // Mutation producing P''
             ArrayList<Individual> mutationOffspring = mutationStrategy.mutate(crossoverOffspring, progress);
-            measure(mutationOffspring, gen);
+            measurePopulation(mutationOffspring, gen);
             
             // Select P(t+1) from union of offspring: P U P'' -- should we select from P U P' U P''
-            //previousPopulation.addAll(crossoverOffspring); //crossed over -- should we include these, even?
             previousPopulation.addAll(mutationOffspring);  //crossed over and mutated
             population = populationSelectionStrategy.selectDynamic(previousPopulation, populationSize, progress);
 
             // Advance to next generation
             ++gen;
             if (gen % RESOLUTION == 0){
-                U.m(gen + ":\t" + getBest().getFitness());
+                printMeasurements(gen);
             }
         } while (gen < generations);
 
-        U.m("\n\n****************************************  " + "RUN COMPLETE" + "  ****************************************\n\n");
-        printBest();
+        //U.m("\n\n****************************************  " + "RUN COMPLETE" + "  ****************************************\n\n");
+        //printBestIndividual();
+    }
+    
+    private void printMeasurements(int generation){
+        Individual best = getBestIndividual();
+        double fitness = best.getFitness();
+        int size = best.size();
+        double heterogenity = best.getHeterogeneity();
+        Indicator mostOccuring = best.getMostOccuringIndicator();
+        double fitnessSizeRatio = fitness / (double) size;
+        U.m(generation + DELIMETER
+                + fitness + DELIMETER
+                + size + DELIMETER
+                + fitnessSizeRatio + DELIMETER
+                + heterogenity + DELIMETER
+                + mostOccuring + ","
+                + mostOccuring.getCode());
     }
 
-    private void measure(ArrayList<Individual> individuals, int generation) {
+    private void measurePopulation(ArrayList<Individual> individuals, int generation) {
         for (Individual individual : individuals) {
             individual.measure(generation, securities);
         }
     }
     
-    private Individual getBest() {
+    private Individual getBestIndividual() {
         Collections.sort(population, Individual.DescendingFitness);
         return population.get(0);
     }
 
-    private void printBest() {
-        U.m("Best f(): " + getBest().getFitness());
+    private void printBestIndividual() {
+        U.m("Best f(): " + getBestIndividual().getFitness() + ", fs(): " + (getBestIndividual().getFitness() + (1.0 / getBestIndividual().getTree().size())));
     }
 
     private void printPopulationFitnesses(ArrayList<Individual> individuals) {

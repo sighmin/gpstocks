@@ -2,8 +2,12 @@ package gpfinance.tree;
 
 import gpfinance.U;
 import gpfinance.datatypes.Decision;
+import gpfinance.datatypes.Fund;
+import gpfinance.datatypes.Indicator;
 import gpfinance.datatypes.Security;
+import gpfinance.datatypes.Tech;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -46,6 +50,11 @@ public class DecisionTree {
         for (int i = 0; i < numNodes-1; ++i) { // -1 for the root node already generated
             insertRandom();
         }
+    }
+    
+    @Override
+    public DecisionTree clone(){
+        return new DecisionTree(this.type, this.numNodes, (Node) this.root.clone());
     }
 
     private CriteriaNode generateRandomNonterminalNode() {
@@ -143,6 +152,86 @@ public class DecisionTree {
         return (int) (Math.log(size()) / Math.log(2));
     }
 
+    public double heterogeneity() {
+        double heterogenity = 0.0;
+        
+        // Calculate occurances of each indicator
+        int size = type == 'F' ? Fund.values().length : Tech.values().length;
+        ArrayList<Integer> occurances = new ArrayList();
+        for (int i = 0; i < size; ++i){
+            occurances.add(0);
+        }
+        calculateHeterogeneity(root, occurances);
+        
+        // Remove occurances of 0
+        Iterator<Integer> iter = occurances.iterator();
+        while (iter.hasNext()){
+            if (iter.next() == 0){
+                iter.remove();
+            }
+        }
+        
+        // Divide sum of occurances of indicators by number of indicators with at least 1 occurance in the tree
+        // I don't know if this is actually supposed to be here...?
+        int sum = 0;
+        for (Integer integer : occurances){
+            sum += integer;
+        }
+        
+        heterogenity = ((double) sum) / ((double) occurances.size());
+        
+        return heterogenity;
+    }
+    
+    private void calculateHeterogeneity(Node node, ArrayList<Integer> occurances){
+        if (!node.isLeaf()){
+            int index = ((CriteriaNode) node).indicator.getCode();
+            occurances.set(index, occurances.get(index) + 1);
+            calculateHeterogeneity(node.left, occurances);
+            calculateHeterogeneity(node.right, occurances);
+        }
+    }
+
+    public Indicator getMostOccuringIndicator() {
+        Indicator mostOccuring = null;
+        
+        // Calculate occurances of each indicator
+        int size = type == 'F' ? Fund.values().length : Tech.values().length;
+        ArrayList<Integer> occurances = new ArrayList();
+        for (int i = 0; i < size; ++i){
+            occurances.add(0);
+        }
+        calculateHeterogeneity(root, occurances);
+        
+        // Get most occuring indicator
+        int index = 0;
+        int largest = 0;
+        for (int i = 0; i < occurances.size(); ++i){
+            if (largest < occurances.get(i)){
+                largest = occurances.get(i);
+                index = i;
+            }
+        }
+        
+        if (type == 'F'){
+            Fund[] indicators = Fund.values();
+            for (Fund f : indicators){
+                if (f.getCode() == index){
+                    mostOccuring = f;
+                }
+            }
+        } else {
+            Tech[] indicators = Tech.values();
+            for (Tech t : indicators){
+                if (t.getCode() == index){
+                    mostOccuring = t;
+                }
+            }
+        }
+        
+        return mostOccuring;
+    }
+
     public void print() {
         root.printChain();
     }
@@ -150,10 +239,15 @@ public class DecisionTree {
     public Node getRoot(){
         return this.root;
     }
-    
-    @Override
-    public DecisionTree clone(){
-        return new DecisionTree(this.type, this.numNodes, (Node) this.root.clone());
+
+    public Decision[] evaluate(ArrayList<Security> securities) {
+        Decision[] decisions = new Decision[securities.size()];
+        
+        for (int i = 0; i < securities.size(); ++i){
+            decisions[i] = root.eval(securities.get(i).values);
+        }
+        
+        return decisions;
     }
     
     /**
@@ -251,15 +345,5 @@ public class DecisionTree {
         Node[] nodes = getRandomNonterminalNode(false);
         if (nodes != null)
             ((CriteriaNode) nodes[1]).randomizeIndicator();
-    }
-
-    public Decision[] evaluate(ArrayList<Security> securities) {
-        Decision[] decisions = new Decision[securities.size()];
-        
-        for (int i = 0; i < securities.size(); ++i){
-            decisions[i] = root.eval(securities.get(i).values);
-        }
-        
-        return decisions;
     }
 }
